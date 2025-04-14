@@ -23,6 +23,9 @@ CString GetIsoTimestamp();
 void SendPostJsonRequest(CString action, CString userId);
 CString GetComputerNameMFC();
 CString GetUsernameMFC();
+CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR filePath);
+CString GetIniFilePath(LPCTSTR iniFileName);
+
 
 // CAboutDlg dialog used for App About
 
@@ -171,12 +174,18 @@ HCURSOR CenzotechdeviceloginDlg::OnQueryDragIcon()
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogin()
 {
-	SendPostJsonRequest(_T("login"), _T("<user>")); // Example user ID
+	CString path = GetIniFilePath(_T("user.ini"));
+	CString user_id = ReadIniValue(_T("User"), _T("ID"), _T("no_id"), path);
+		
+	SendPostJsonRequest(_T("login"), user_id); // Example user ID
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 {
-	SendPostJsonRequest(_T("logout"), _T("<user>")); // Example user ID
+	CString path = GetIniFilePath(_T("user.ini"));
+	CString user_id = ReadIniValue(_T("User"), _T("ID"), _T("no_id"), path);
+
+	SendPostJsonRequest(_T("logout"), user_id); // Example user ID
 }
 
 CString GetIsoTimestamp()
@@ -280,8 +289,11 @@ void SendPostJsonRequest(CString action, CString userId)
 				}
 			} else {
 				if (errorCode == "user_not_found") {
-					CString msg = _T("User not found. Would you like to register?");
-					int result = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION);
+					CString errorMessage;
+					
+					errorMessage.Format(_T("%s. Would you like to register?"), (LPCTSTR)CString(CA2T(error.c_str())));
+
+					int result = AfxMessageBox(errorMessage, MB_YESNO | MB_ICONQUESTION);
 					if (result == IDYES) {
 						// Open registration link
 						ShellExecute(NULL, _T("open"), _T("https://enzotechcomputersolutions.com/login"), NULL, NULL, SW_SHOWNORMAL);
@@ -334,4 +346,27 @@ CString GetUsernameMFC()
 	else {
 		return _T("UnknownUser");
 	}
+}
+
+CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR filePath)
+{
+	TCHAR buffer[256];
+	GetPrivateProfileString(section, key, defaultValue, buffer, sizeof(buffer) / sizeof(TCHAR), filePath);
+	return CString(buffer);
+}
+
+CString GetIniFilePath(LPCTSTR iniFileName)
+{
+	TCHAR exePath[MAX_PATH];
+	GetModuleFileName(NULL, exePath, MAX_PATH);
+
+	CString path(exePath);
+	int pos = path.ReverseFind(_T('\\'));
+	if (pos != -1)
+	{
+		path = path.Left(pos + 1);  // Keep the directory path
+	}
+
+	path += iniFileName;  // Append the ini filename
+	return path;
 }
