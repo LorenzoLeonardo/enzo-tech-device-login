@@ -279,11 +279,21 @@ void SendPostJsonRequest(CString action, CString userId)
 
 				}
 			} else {
-				CString errorMessage;
-				errorMessage.Format(_T("Operation failed. Error: %s, Code: %s"),
-					(LPCTSTR)CString(CA2T(error.c_str())),
-					(LPCTSTR)CString(CA2T(errorCode.c_str())));
-				AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+				if (errorCode == "user_not_found") {
+					CString msg = _T("User not found. Would you like to register?");
+					int result = AfxMessageBox(msg, MB_YESNO | MB_ICONQUESTION);
+					if (result == IDYES) {
+						// Open registration link
+						ShellExecute(NULL, _T("open"), _T("https://enzotechcomputersolutions.com/login"), NULL, NULL, SW_SHOWNORMAL);
+					}
+				}
+				else {
+					CString errorMessage;
+					errorMessage.Format(_T("Operation failed. Error: %s, Code: %s"),
+						(LPCTSTR)CString(CA2T(error.c_str())),
+						(LPCTSTR)CString(CA2T(errorCode.c_str())));
+					AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+				}
 			}
 		} catch (const json::exception& e) {
 			CString errorMessage;
