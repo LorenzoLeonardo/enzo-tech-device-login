@@ -24,6 +24,7 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
+	CBrush m_brBackground;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -36,4 +37,5 @@ public:
 	CButton m_ctrlBtnLogout;
 	afx_msg void OnBnClickedButtonLogin();
 	afx_msg void OnBnClickedButtonLogout();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

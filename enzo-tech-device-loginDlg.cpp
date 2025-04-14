@@ -21,6 +21,7 @@ using json = nlohmann::json;
 
 CString GetIsoTimestamp();
 void SendPostJsonRequest(CString action, CString userId);
+void SendGetJsonRequest(CString userId);
 CString GetComputerNameMFC();
 CString GetUsernameMFC();
 CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR filePath);
@@ -83,6 +84,7 @@ BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_LOGIN, &CenzotechdeviceloginDlg::OnBnClickedButtonLogin)
 	ON_BN_CLICKED(IDC_BUTTON_LOGOUT, &CenzotechdeviceloginDlg::OnBnClickedButtonLogout)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -111,14 +113,14 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
 		}
 	}
-
+	m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-
+	SendGetJsonRequest(_T("login")); // Example user ID
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -322,6 +324,95 @@ void SendPostJsonRequest(CString action, CString userId)
 	InternetCloseHandle(hInternet);
 }
 
+void SendGetJsonRequest(CString userId)
+{
+	HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+	if (!hInternet) {
+		AfxMessageBox(_T("InternetOpen failed"));
+		return;
+	}
+
+	HINTERNET hConnect = InternetConnect(hInternet, _T("enzotechcomputersolutions.com"),
+		INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+	if (!hConnect) {
+		AfxMessageBox(_T("InternetConnect failed"));
+		InternetCloseHandle(hInternet);
+		return;
+	}
+
+	CString request;
+	request.Format(_T("/device_login?user_id=%s"), (LPCTSTR)userId);
+
+	HINTERNET hRequest = HttpOpenRequest(hConnect, _T("GET"), request,
+		NULL, NULL, NULL,
+		INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
+
+	if (!hRequest) {
+		AfxMessageBox(_T("HttpOpenRequest failed"));
+		InternetCloseHandle(hConnect);
+		InternetCloseHandle(hInternet);
+		return;
+	}
+
+	LPCTSTR headers = _T("Content-Type: application/json\r\n");
+	BOOL success = HttpSendRequest(hRequest, headers, -1L, NULL, 0);
+
+	if (success) {
+		CStringA response;
+		char buffer[4096] = {};
+		DWORD bytesRead = 0;
+
+		while (InternetReadFile(hRequest, buffer, sizeof(buffer) - 1, &bytesRead) && bytesRead) {
+			buffer[bytesRead] = '\0';
+			response += buffer;
+		}
+
+		try {
+			json j = json::parse(response.GetString());
+
+			bool successFlag = j.value("success", false);
+			std::string error = j.value("error", "");
+			std::string errorCode = j.value("error_code", "");
+
+			if (successFlag) {
+				CString message = (userId == _T("login")) ? _T("Login successful") :
+					(userId == _T("logout")) ? _T("Logout successful") : _T("Success");
+				AfxMessageBox(message, MB_OK | MB_ICONINFORMATION);
+			}
+			else {
+				if (errorCode == "user_not_found") {
+					CString prompt;
+					prompt.Format(_T("%s. Would you like to register?"), (LPCTSTR)CString(CA2T(error.c_str())));
+					int result = AfxMessageBox(prompt, MB_YESNO | MB_ICONQUESTION);
+					if (result == IDYES) {
+						ShellExecute(NULL, _T("open"), _T("https://enzotechcomputersolutions.com/login"), NULL, NULL, SW_SHOWNORMAL);
+					}
+				}
+				else {
+					CString errorMessage;
+					errorMessage.Format(_T("Operation failed. Error: %s, Code: %s"),
+						(LPCTSTR)CString(CA2T(error.c_str())),
+						(LPCTSTR)CString(CA2T(errorCode.c_str())));
+					AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+				}
+			}
+		}
+		catch (const json::exception& e) {
+			CString errorMessage;
+			errorMessage.Format(_T("JSON parsing failed: %s"), (LPCTSTR)CString(CA2T(e.what())));
+			AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+		}
+	}
+	else {
+		AfxMessageBox(_T("HttpSendRequest failed"));
+	}
+
+	// Clean up
+	InternetCloseHandle(hRequest);
+	InternetCloseHandle(hConnect);
+	InternetCloseHandle(hInternet);
+}
+
 CString GetComputerNameMFC()
 {
 	TCHAR nameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -369,4 +460,22 @@ CString GetIniFilePath(LPCTSTR iniFileName)
 
 	path += iniFileName;  // Append the ini filename
 	return path;
+}
+HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// Set dialog background color
+	if (nCtlColor == CTLCOLOR_DLG)
+	{
+		return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
+
+	if (nCtlColor == CTLCOLOR_STATIC)
+	{
+		pDC->SetTextColor(RGB(21, 101, 192));
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
+	return hbr;
 }
