@@ -12,6 +12,9 @@
 #include <wininet.h>
 #pragma comment(lib, "wininet.lib")
 
+#include "json.hpp"
+using json = nlohmann::json;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -250,16 +253,43 @@ void SendPostJsonRequest(CString action, CString userId)
 		utf8Length);  // size in bytes (UTF-8)
 
 	if (success) {
-		char buffer[4096];
+		char buffer[4096] = {};
 		DWORD bytesRead = 0;
 		CStringA response;
-
 		while (InternetReadFile(hRequest, buffer, sizeof(buffer) - 1, &bytesRead) && bytesRead) {
 			buffer[bytesRead] = '\0';
 			response += buffer;
 		}
 
-		AfxMessageBox(CA2T(response));
+		try {
+			json j = json::parse((LPCSTR)response);
+
+			// Parse the JSON response
+			bool success = j.value("success", false);
+			std::string error = j.value("error", "");
+			std::string errorCode = j.value("error_code", "");
+
+			// Handle the parsed values
+			if (success) {
+				if (userId == _T("login")) {
+					AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
+				}
+				else if (userId == _T("logout")) {
+					AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
+
+				}
+			} else {
+				CString errorMessage;
+				errorMessage.Format(_T("Operation failed. Error: %s, Code: %s"),
+					(LPCTSTR)CString(CA2T(error.c_str())),
+					(LPCTSTR)CString(CA2T(errorCode.c_str())));
+				AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+			}
+		} catch (const json::exception& e) {
+			CString errorMessage;
+			errorMessage.Format(_T("JSON parsing failed: %s"), (LPCTSTR)CString(CA2T(e.what())));
+			AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+		}
 	}
 	else {
 		AfxMessageBox(_T("HttpSendRequest failed"));
