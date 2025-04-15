@@ -38,4 +38,5 @@ public:
 	afx_msg void OnBnClickedButtonLogin();
 	afx_msg void OnBnClickedButtonLogout();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };

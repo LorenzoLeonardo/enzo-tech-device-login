@@ -83,6 +83,7 @@ BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LOGIN, &CenzotechdeviceloginDlg::OnBnClickedButtonLogin)
 	ON_BN_CLICKED(IDC_BUTTON_LOGOUT, &CenzotechdeviceloginDlg::OnBnClickedButtonLogout)
 	ON_WM_CTLCOLOR()
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -117,8 +118,14 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
-	//SendGetJsonRequest(_T("login")); // Example user ID
+	CString path = GetIniFilePath(_T("user.ini"));
+	CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+	CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+	CString device_id = GetComputerNameMFC();
+	SetDlgItemText(IDC_EDIT_NAME, name);
+	SetDlgItemText(IDC_EDIT_EMAIL, email);
+	SetDlgItemText(IDC_EDIT_DEVICE_ID, device_id);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -433,11 +440,36 @@ HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		return (HBRUSH)m_brBackground.GetSafeHandle();
 	}
 
-	if (nCtlColor == CTLCOLOR_STATIC)
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC)
 	{
 		pDC->SetTextColor(RGB(21, 101, 192));
 		pDC->SetBkMode(TRANSPARENT);
 		return (HBRUSH)m_brBackground.GetSafeHandle();
 	}
+	else if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME ||
+		pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
+		pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE) {
+		pDC->SetTextColor(RGB(255, 255, 255));
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
+	else if (pWnd->GetDlgCtrlID() == IDC_EDIT_NAME ||
+		pWnd->GetDlgCtrlID() == IDC_EDIT_EMAIL ||
+		pWnd->GetDlgCtrlID() == IDC_EDIT_DEVICE_ID) {
+		pDC->SetBkColor(RGB(13, 71, 161));
+		pDC->SetBkMode(OPAQUE);
+		//return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
 	return hbr;
+}
+
+BOOL CenzotechdeviceloginDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGIN || pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGOUT)
+	{
+		::SetCursor(::LoadCursor(NULL, IDC_HAND));
+		return TRUE;
+	}
+	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
 }
