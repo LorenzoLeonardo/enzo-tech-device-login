@@ -58,6 +58,17 @@ struct DeviceLoginResponse {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponse, success, error, error_code)
 
+struct DeviceEvent {
+    std::string session_id;
+    std::string user_id;
+    std::string username;
+    std::string timestamp;
+    std::string action;
+    std::string device_id;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceEvent, session_id, user_id, username, timestamp, action, device_id)
+
 using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponse>;
 
 template<typename TInput>

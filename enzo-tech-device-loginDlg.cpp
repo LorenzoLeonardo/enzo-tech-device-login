@@ -17,7 +17,7 @@ using json = nlohmann::json;
 
 #include "Communicator.h"
 #include "utils.h"
-
+#include <atlconv.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -175,17 +175,53 @@ HCURSOR CenzotechdeviceloginDlg::OnQueryDragIcon()
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogin()
 {
 	CString path = GetIniFilePath(_T("user.ini"));
-	CString user_id = ReadIniValue(_T("User"), _T("ID"), _T("no_id"), path);
-		
-	SendPostJsonRequest(_T("login"), user_id); // Example user ID
+	CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+	CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+	CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+	CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+	CString device_id = GetComputerNameMFC();
+	CString username = GetUsernameMFC();	
+	CString timestamp = GetIsoTimestamp();	
+	CString action = _T("login");	
+
+	ApiResponse resp = HttpPost<DeviceEvent>(DeviceEvent
+		{
+			std::string(CW2A(session_id.GetString(), CP_UTF8)),
+			std::string(CW2A(user_id.GetString(), CP_UTF8)),
+			std::string(CW2A(username.GetString(), CP_UTF8)),
+			std::string(CW2A(timestamp.GetString(), CP_UTF8)),
+			std::string(CW2A(action.GetString(), CP_UTF8)),
+			std::string(CW2A(device_id.GetString(), CP_UTF8)),
+		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
+	if (std::holds_alternative<DeviceLoginResponse>(resp)) {
+		AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
+	}
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 {
 	CString path = GetIniFilePath(_T("user.ini"));
-	CString user_id = ReadIniValue(_T("User"), _T("ID"), _T("no_id"), path);
+	CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+	CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+	CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+	CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+	CString device_id = GetComputerNameMFC();
+	CString username = GetUsernameMFC();
+	CString timestamp = GetIsoTimestamp();
+	CString action = _T("logout");
 
-	SendPostJsonRequest(_T("logout"), user_id); // Example user ID
+	ApiResponse resp = HttpPost<DeviceEvent>(DeviceEvent
+		{
+			std::string(CW2A(session_id.GetString(), CP_UTF8)),
+			std::string(CW2A(user_id.GetString(), CP_UTF8)),
+			std::string(CW2A(username.GetString(), CP_UTF8)),
+			std::string(CW2A(timestamp.GetString(), CP_UTF8)),
+			std::string(CW2A(action.GetString(), CP_UTF8)),
+			std::string(CW2A(device_id.GetString(), CP_UTF8)),
+		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
+	if (std::holds_alternative<DeviceLoginResponse>(resp)) {
+		AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
+	}
 }
 
 
