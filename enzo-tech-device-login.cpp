@@ -59,28 +59,34 @@ static bool PerformLoginFlow(const CString& path) {
 }
 
 static bool CheckExistingSession(const CString& session_id, const CString& path) {
-    std::string uuid_s(CW2A(session_id, CP_UTF8));
-    ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid_s }, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+    CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+    CString device_id = GetComputerNameMFC();
+    CString username = GetUsernameMFC();
+    CString timestamp = GetIsoTimestamp();
+    CString action = ReadIniValue(_T("User"), _T("action"), _T("logout"), path);
 
-    if (std::holds_alternative<PollResponse>(resp)) {
-        PollResponse response = std::get<PollResponse>(resp);
-        CString user(CA2T(response.user_id.c_str(), CP_UTF8));
-        CString name(CA2T(response.name.c_str(), CP_UTF8));
-        CString email(CA2T(response.email.c_str(), CP_UTF8));
-        WriteIniValue(_T("User"), _T("user_id"), user, path);
-        WriteIniValue(_T("User"), _T("session_id"), session_id, path);
-        WriteIniValue(_T("User"), _T("name"), name, path);
-        WriteIniValue(_T("User"), _T("email"), email, path);
+    ApiResponse resp = HttpPost<DeviceEvent>(DeviceEvent
+        {
+            std::string(CW2A(session_id.GetString(), CP_UTF8)),
+            std::string(CW2A(user_id.GetString(), CP_UTF8)),
+            std::string(CW2A(username.GetString(), CP_UTF8)),
+            std::string(CW2A(timestamp.GetString(), CP_UTF8)),
+            std::string(CW2A(action.GetString(), CP_UTF8)),
+            std::string(CW2A(device_id.GetString(), CP_UTF8)),
+        }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
+
+    if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
+
         CString welcome;
         welcome.Format(_T("Welcome back %s (%s)"), (LPCTSTR)name, (LPCTSTR)email);
         AfxMessageBox(welcome, MB_OK | MB_ICONINFORMATION);
         return true;
     }
-    else if (std::holds_alternative<PollResponseError>(resp)) {
-        PollResponseError response = std::get<PollResponseError>(resp);
-        if ((response.error == ErrorCodes::invalid_credentials) ||
-            (response.error == ErrorCodes::device_not_registered) ||
-            (response.error == ErrorCodes::invalid_request)) {
+    else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
+        DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
+        if (response.error_code == ErrorCodes::invalid_grant) {
             WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
             WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
             AfxMessageBox(_T("Session has expired. Please run the program again."), MB_OK | MB_ICONERROR);

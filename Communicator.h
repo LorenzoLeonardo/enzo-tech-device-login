@@ -16,7 +16,8 @@ enum class ErrorCodes {
     invalid_request,
     invalid_credentials,
     device_not_registered,
-    server_error
+    server_error,
+    invalid_grant,
 };
 
 // Convert between enum and string
@@ -25,7 +26,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ErrorCodes, {
     {ErrorCodes::invalid_request, "invalid_request"},
     {ErrorCodes::invalid_credentials, "invalid_credentials"},
     {ErrorCodes::device_not_registered, "device_not_registered"},
-    {ErrorCodes::server_error, "server_error"}
+    {ErrorCodes::server_error, "server_error"},
+    {ErrorCodes::invalid_grant, "invalid_grant"}
 })
 
     // Define the PollRequest struct
