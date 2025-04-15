@@ -193,7 +193,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin()
 			std::string(CW2A(action.GetString(), CP_UTF8)),
 			std::string(CW2A(device_id.GetString(), CP_UTF8)),
 		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
-	if (std::holds_alternative<DeviceLoginResponse>(resp)) {
+	if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
 		AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
 	}
 }
@@ -219,7 +219,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 			std::string(CW2A(action.GetString(), CP_UTF8)),
 			std::string(CW2A(device_id.GetString(), CP_UTF8)),
 		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
-	if (std::holds_alternative<DeviceLoginResponse>(resp)) {
+	if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
 		AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
 	}
 }

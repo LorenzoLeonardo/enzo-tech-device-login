@@ -4,6 +4,7 @@
 #include "json.hpp"
 #include <variant>
 #include <atlconv.h>
+#include <optional>
 
 using json = nlohmann::json;
 
@@ -50,13 +51,19 @@ struct PollResponseError {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PollResponseError, error)
 
-struct DeviceLoginResponse {
+struct DeviceLoginResponseError {
     bool success;
     std::string error;
     ErrorCodes error_code;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponse, success, error, error_code)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseError, success, error, error_code)
+
+struct DeviceLoginResponseSuccess {
+    bool success;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseSuccess, success)
 
 struct DeviceEvent {
     std::string session_id;
@@ -69,7 +76,7 @@ struct DeviceEvent {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceEvent, session_id, user_id, username, timestamp, action, device_id)
 
-using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponse>;
+using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponseError, DeviceLoginResponseSuccess>;
 
 template<typename TInput>
 ApiResponse
@@ -139,8 +146,13 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
     try {
         json j = json::parse(responseStr);
 
-        if (j.contains("success")) {
-            output = j.get<DeviceLoginResponse>();
+        if (j.contains("success") && j.contains("error") && !j["error"].is_null() &&
+            j.contains("error_code") && !j["error_code"].is_null()) {
+            output = j.get<DeviceLoginResponseError>();
+        }
+        else if (j.contains("success") && j.contains("error") && j["error"].is_null() &&
+            j.contains("error_code") && j["error_code"].is_null()) {
+            output = j.get<DeviceLoginResponseSuccess>();
         }
         else if (j.contains("error")) {
             output = j.get<PollResponseError>();
