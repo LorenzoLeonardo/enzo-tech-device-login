@@ -185,6 +185,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Communicator.h" />
     <ClInclude Include="enzo-tech-device-login.h" />
     <ClInclude Include="enzo-tech-device-loginDlg.h" />
     <ClInclude Include="framework.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="enzo-tech-device-login.cpp" />
     <ClCompile Include="enzo-tech-device-loginDlg.cpp" />
     <ClCompile Include="pch.cpp">
