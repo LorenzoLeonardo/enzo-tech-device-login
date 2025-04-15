@@ -121,11 +121,20 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 	CString path = GetIniFilePath(_T("user.ini"));
 	CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
 	CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+	CString prev_action = ReadIniValue(_T("User"), _T("action"), _T("logout"), path);
 	CString device_id = GetComputerNameMFC();
 	SetDlgItemText(IDC_EDIT_NAME, name);
 	SetDlgItemText(IDC_EDIT_EMAIL, email);
 	SetDlgItemText(IDC_EDIT_DEVICE_ID, device_id);
 
+	if (prev_action == _T("login")) {
+		m_ctrlBtnLogin.EnableWindow(FALSE);
+		m_ctrlBtnLogout.EnableWindow(TRUE);
+	}
+	else {
+		m_ctrlBtnLogin.EnableWindow(TRUE);
+		m_ctrlBtnLogout.EnableWindow(FALSE);
+	}
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -202,6 +211,9 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin()
 		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 	if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
 		AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
+		WriteIniValue(_T("User"), _T("action"), _T("login"), path);
+		m_ctrlBtnLogin.EnableWindow(FALSE);
+		m_ctrlBtnLogout.EnableWindow(TRUE);
 	}
 }
 
@@ -228,6 +240,9 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 		}, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 	if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
 		AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
+		WriteIniValue(_T("User"), _T("action"), _T("logout"), path);
+		m_ctrlBtnLogin.EnableWindow(TRUE);
+		m_ctrlBtnLogout.EnableWindow(FALSE);
 	}
 }
 
