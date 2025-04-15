@@ -75,6 +75,7 @@ void CenzotechdeviceloginDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_LOGIN, m_ctrlBtnLogin);
 	DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_ctrlBtnLogout);
 	DDX_Control(pDX, IDC_MY_GROUPBOX, m_myGroupBox);
+	DDX_Control(pDX, IDC_STATIC_PICTURE, m_ctrlStaticLogo);
 }
 
 BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
@@ -85,6 +86,8 @@ BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LOGOUT, &CenzotechdeviceloginDlg::OnBnClickedButtonLogout)
 	ON_WM_CTLCOLOR()
 	ON_WM_SETCURSOR()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -522,4 +525,44 @@ void SendGetJsonRequest(CString userId)
 	InternetCloseHandle(hRequest);
 	InternetCloseHandle(hConnect);
 	InternetCloseHandle(hInternet);
+}
+
+void CenzotechdeviceloginDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	RECT rect, rectDlg, translatedRect;
+	this->GetWindowRect(&rectDlg);
+	m_ctrlStaticLogo.GetWindowRect(&rect);
+	m_ctrlStaticLogo.GetClientRect(&translatedRect);
+
+	translatedRect.left = rect.left - rectDlg.left - 10;
+	translatedRect.top = rect.top - rectDlg.top - 30;
+	translatedRect.right = rect.right - rectDlg.left - 10;
+	translatedRect.bottom = rect.bottom - rectDlg.top - 30;
+
+	if ((translatedRect.left <= (point.x)) &&
+		((point.x) <= translatedRect.right) &&
+		((translatedRect.top) <= point.y) &&
+		(point.y <= (translatedRect.bottom))) {
+		SetCursor(LoadCursor(NULL, IDC_HAND));
+	}
+}
+
+void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	RECT rect, rectDlg, translatedRect;
+	this->GetWindowRect(&rectDlg);
+	m_ctrlStaticLogo.GetWindowRect(&rect);
+	m_ctrlStaticLogo.GetClientRect(&translatedRect);
+	translatedRect.left = rect.left - rectDlg.left - 10;
+	translatedRect.top = rect.top - rectDlg.top - 30;
+	translatedRect.right = rect.right - rectDlg.left - 10;
+	translatedRect.bottom = rect.bottom - rectDlg.top - 30;
+	if ((translatedRect.left <= (point.x)) &&
+		((point.x) <= translatedRect.right) &&
+		((translatedRect.top) <= point.y) &&
+		(point.y <= (translatedRect.bottom))) {
+		ShellExecute(NULL, _T("open"), _T("https://enzotechcomputersolutions.com/timekeeping?page=1"), NULL,
+			NULL, SW_SHOWNORMAL);
+	}
+	CDialogEx::OnLButtonDown(nFlags, point);
 }
