@@ -104,25 +104,31 @@ BOOL CenzotechdeviceloginApp::InitInstance()
 			}
 			Sleep(5000);
 		} while (true);
-	} else {
-
+	}
+	else {
+		CString url;
+		std::string uuid_s(CW2A(session_id, CP_UTF8));
+		ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid_s }, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
+		if (resp.index() == 0) { // PollResponse
+			PollResponse response = std::get<PollResponse>(resp);
+			AfxMessageBox(_T("Login successful!"), MB_OK | MB_ICONINFORMATION);
+			is_success = true;
+		}
+		else if (resp.index() == 1) {
+			PollResponseError response = std::get<PollResponseError>(resp);
+			if ((response.error == ErrorCodes::invalid_credentials) || 
+				(response.error == ErrorCodes::device_not_registered) ||
+				(response.error == ErrorCodes::invalid_request)) {
+					WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+					WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+					AfxMessageBox(_T("Sessions has expired, Please execute the program again.!!"), MB_OK | MB_ICONERROR);
+			}
+			else {
+				AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+			}
+		}
 	}
 
-
-	/*std::string uuid = generate_uuid();
-	ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
-
-	int typeIndex = resp.index();
-// Use std::get to access the stored value
-	if (typeIndex == 0) { // PollResponse
-		PollResponse response = std::get<PollResponse>(resp);
-	}
-	else if (typeIndex == 1) { // PollResponseError
-		PollResponseError error = std::get<PollResponseError>(resp);
-	}
-	else if (typeIndex == 2) { // DeviceLoginResponse
-		DeviceLoginResponse loginResponse = std::get<DeviceLoginResponse>(resp);
-	}*/
 	if (is_success) {
 		CenzotechdeviceloginDlg dlg;
 		m_pMainWnd = &dlg;
