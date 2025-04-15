@@ -25,7 +25,9 @@ public:
 protected:
 	HICON m_hIcon;
 	CBrush m_brBackground;
+	CBrush m_brGroupBox;
 
+	CButton m_myGroupBox;
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

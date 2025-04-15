@@ -74,6 +74,7 @@ void CenzotechdeviceloginDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_LOGIN, m_ctrlBtnLogin);
 	DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_ctrlBtnLogout);
+	DDX_Control(pDX, IDC_MY_GROUPBOX, m_myGroupBox);
 }
 
 BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
@@ -113,6 +114,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 		}
 	}
 	m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
+	m_brGroupBox.CreateSolidBrush(RGB(66, 165, 245));
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
@@ -176,8 +178,63 @@ void CenzotechdeviceloginDlg::OnPaint()
 	}
 	else
 	{
+		CPaintDC dc(this); // device context for painting
+
+		// Call base class (important!)
 		CDialogEx::OnPaint();
+
+		// Get the group box control
+		CWnd* pGroup = GetDlgItem(IDC_MY_GROUPBOX);
+		if (pGroup)
+		{
+			CRect rect;
+			pGroup->GetWindowRect(&rect);
+			rect.top += 10;
+			//rect.left += 10;
+			ScreenToClient(&rect);
+
+			dc.FillSolidRect(&rect, RGB(66, 165, 245));
+		}
 	}
+}
+
+HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// Set dialog background color
+	if (nCtlColor == CTLCOLOR_DLG)
+	{
+		return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC)
+	{
+		pDC->SetTextColor(RGB(21, 101, 192));
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)m_brBackground.GetSafeHandle();
+	}
+
+	else if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME ||
+		pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
+		pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE ||
+		pWnd->GetDlgCtrlID() == IDC_MY_GROUPBOX) {
+		pDC->SetTextColor(RGB(255, 255, 255));
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)m_brGroupBox.GetSafeHandle();
+	}
+	return hbr;
+}
+
+BOOL CenzotechdeviceloginDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGIN || pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGOUT)
+	{
+		::SetCursor(::LoadCursor(NULL, IDC_HAND));
+		return TRUE;
+	}
+	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
 }
 
 // The system calls this function to obtain the cursor to display while the user drags
@@ -465,48 +522,4 @@ void SendGetJsonRequest(CString userId)
 	InternetCloseHandle(hRequest);
 	InternetCloseHandle(hConnect);
 	InternetCloseHandle(hInternet);
-}
-
-HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
-
-	// Set dialog background color
-	if (nCtlColor == CTLCOLOR_DLG)
-	{
-		return (HBRUSH)m_brBackground.GetSafeHandle();
-	}
-
-	if (pWnd->GetDlgCtrlID() == IDC_STATIC)
-	{
-		pDC->SetTextColor(RGB(21, 101, 192));
-		pDC->SetBkMode(TRANSPARENT);
-		return (HBRUSH)m_brBackground.GetSafeHandle();
-	}
-	else if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME ||
-		pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
-		pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE) {
-		pDC->SetTextColor(RGB(255, 255, 255));
-		pDC->SetBkMode(TRANSPARENT);
-		return (HBRUSH)m_brBackground.GetSafeHandle();
-	}
-	else if (pWnd->GetDlgCtrlID() == IDC_EDIT_NAME ||
-		pWnd->GetDlgCtrlID() == IDC_EDIT_EMAIL ||
-		pWnd->GetDlgCtrlID() == IDC_EDIT_DEVICE_ID) {
-		pDC->SetBkColor(RGB(13, 71, 161));
-		pDC->SetBkMode(OPAQUE);
-		//return (HBRUSH)m_brBackground.GetSafeHandle();
-	}
-	return hbr;
-}
-
-BOOL CenzotechdeviceloginDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
-{
-	// TODO: Add your message handler code here and/or call default
-	if (pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGIN || pWnd->GetDlgCtrlID() == IDC_BUTTON_LOGOUT)
-	{
-		::SetCursor(::LoadCursor(NULL, IDC_HAND));
-		return TRUE;
-	}
-	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
 }
