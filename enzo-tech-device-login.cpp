@@ -8,6 +8,9 @@
 #include "enzo-tech-device-loginDlg.h"
 #include "Communicator.h"
 #include "Uuid.h"
+#include "utils.h"
+
+#include <atlconv.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -72,12 +75,45 @@ BOOL CenzotechdeviceloginApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-	std::string uuid = generate_uuid();	
+
+	CString path = GetIniFilePath(_T("user.ini"));
+	CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+	CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+	CString timestamp = GetIsoTimestamp();
+	CString device_id = GetComputerNameMFC();
+	bool is_success = false;
+
+	if (session_id == _T("default_session_id") || user_id == _T("default_user_id")) {
+		AfxMessageBox(_T("Session ID or User ID is not set. Please log in first."));
+		CString url;
+		std::string uuid_s = generate_uuid();
+		CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
+		url.Format(_T("https://enzotechcomputersolutions.com/auth?login=Google&session_id=%s"), (LPCTSTR)uuid);
+		ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
+
+		do {
+			ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid_s }, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
+			if (resp.index() == 0) { // PollResponse
+				PollResponse response = std::get<PollResponse>(resp);
+				CString user(CA2T(response.user_id.c_str(), CP_UTF8));
+				WriteIniValue(_T("User"), _T("user_id"), user, path);
+				WriteIniValue(_T("User"), _T("session_id"), uuid, path);
+				AfxMessageBox(_T("Login successful!"), MB_OK | MB_ICONINFORMATION);
+				is_success = true;
+				break;
+			}
+			Sleep(5000);
+		} while (true);
+	} else {
+
+	}
+
+
+	/*std::string uuid = generate_uuid();
 	ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 
 	int typeIndex = resp.index();
-
-	// Use std::get to access the stored value
+// Use std::get to access the stored value
 	if (typeIndex == 0) { // PollResponse
 		PollResponse response = std::get<PollResponse>(resp);
 	}
@@ -86,27 +122,27 @@ BOOL CenzotechdeviceloginApp::InitInstance()
 	}
 	else if (typeIndex == 2) { // DeviceLoginResponse
 		DeviceLoginResponse loginResponse = std::get<DeviceLoginResponse>(resp);
+	}*/
+	if (is_success) {
+		CenzotechdeviceloginDlg dlg;
+		m_pMainWnd = &dlg;
+		INT_PTR nResponse = dlg.DoModal();
+		if (nResponse == IDOK)
+		{
+			// TODO: Place code here to handle when the dialog is
+			//  dismissed with OK
+		}
+		else if (nResponse == IDCANCEL)
+		{
+			// TODO: Place code here to handle when the dialog is
+			//  dismissed with Cancel
+		}
+		else if (nResponse == -1)
+		{
+			TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
+			TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
+		}
 	}
-
-	CenzotechdeviceloginDlg dlg;
-	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
-	if (nResponse == IDOK)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with OK
-	}
-	else if (nResponse == IDCANCEL)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with Cancel
-	}
-	else if (nResponse == -1)
-	{
-		TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
-		TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
-	}
-
 	// Delete the shell manager created above.
 	if (pShellManager != nullptr)
 	{

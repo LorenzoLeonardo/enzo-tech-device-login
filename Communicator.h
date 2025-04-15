@@ -3,6 +3,7 @@
 #include <wininet.h>
 #include "json.hpp"
 #include <variant>
+#include <atlconv.h>
 
 using json = nlohmann::json;
 
@@ -66,14 +67,11 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
     ApiResponse output{};
     json j_input = input;
     std::string body = j_input.dump();
+    CString jsonData(CA2T(body.c_str(), CP_UTF8));
 
-    // Convert UTF-8 string to wide string
-    int wideLength = MultiByteToWideChar(CP_UTF8, 0, body.c_str(), -1, nullptr, 0);
-    std::wstring wBody(wideLength, 0);
-    MultiByteToWideChar(CP_UTF8, 0, body.c_str(), -1, &wBody[0], wideLength);
 
     // Open internet session
-    HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, nullptr, nullptr, 0);
+    HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
         AfxMessageBox(_T("InternetOpen failed"));
         return output;
@@ -81,7 +79,7 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
 
     // Connect to host
     HINTERNET hConnect = InternetConnect(hInternet, host, INTERNET_DEFAULT_HTTPS_PORT,
-        nullptr, nullptr, INTERNET_SERVICE_HTTP, 0, 0);
+        NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
     if (!hConnect) {
         AfxMessageBox(_T("InternetConnect failed"));
         InternetCloseHandle(hInternet);
@@ -89,7 +87,7 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
     }
 
     // Open HTTP request
-    HINTERNET hRequest = HttpOpenRequest(hConnect, _T("POST"), endpoint, nullptr, nullptr, nullptr,
+    HINTERNET hRequest = HttpOpenRequest(hConnect, _T("POST"), endpoint, NULL, NULL, NULL,
         INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
     if (!hRequest) {
         AfxMessageBox(_T("HttpOpenRequest failed"));
@@ -98,17 +96,18 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
         return output;
     }
 
-    // Set headers
+    // Convert jsonData (CString - UTF-16) to UTF-8
+    CW2A utf8Json(jsonData, CP_UTF8); // convert wide string to UTF-8
+    LPCSTR utf8Body = utf8Json;
+    int utf8Length = (int)strlen(utf8Body);
+
+    // Send the request with UTF-8 body
     LPCTSTR headers = _T("Content-Type: application/json\r\n");
+    BOOL success = HttpSendRequest(hRequest, headers, -1L,
+        (LPVOID)utf8Body,
+        utf8Length);  // size in bytes (UTF-8)
 
-    // Convert wide string to UTF-8 for sending
-    CW2A utf8Body(wBody.c_str(), CP_UTF8);
-    LPCSTR lpUtf8Body = utf8Body;
-    DWORD dwBodyLength = static_cast<DWORD>(strlen(lpUtf8Body));
-
-    // Send the request
-    BOOL bSuccess = HttpSendRequest(hRequest, headers, -1L, (LPVOID)lpUtf8Body, dwBodyLength);
-    if (!bSuccess) {
+    if (!success) {
         AfxMessageBox(_T("HttpSendRequest failed"));
         InternetCloseHandle(hRequest);
         InternetCloseHandle(hConnect);

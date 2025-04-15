@@ -18,6 +18,7 @@ using json = nlohmann::json;
 #include "Communicator.h"
 #include "utils.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

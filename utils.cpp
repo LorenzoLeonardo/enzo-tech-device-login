@@ -35,6 +35,14 @@ CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR
 	return CString(buffer);
 }
 
+void WriteIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR value, LPCTSTR filePath)
+{
+	if (!WritePrivateProfileString(section, key, value, filePath))
+	{
+		AfxMessageBox(_T("Failed to write to INI file."), MB_OK | MB_ICONERROR);
+	}
+}
+
 CString GetIniFilePath(LPCTSTR iniFileName)
 {
 	TCHAR exePath[MAX_PATH];
