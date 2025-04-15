@@ -40,9 +40,15 @@ static bool PerformLoginFlow(const CString& path) {
         if (std::holds_alternative<PollResponse>(resp)) {
             PollResponse response = std::get<PollResponse>(resp);
             CString user(CA2T(response.user_id.c_str(), CP_UTF8));
+            CString name(CA2T(response.name.c_str(), CP_UTF8));
+            CString email(CA2T(response.email.c_str(), CP_UTF8));
             WriteIniValue(_T("User"), _T("user_id"), user, path);
             WriteIniValue(_T("User"), _T("session_id"), uuid, path);
-            AfxMessageBox(_T("Login successful!"), MB_OK | MB_ICONINFORMATION);
+            WriteIniValue(_T("User"), _T("name"), name, path);
+            WriteIniValue(_T("User"), _T("email"), email, path);
+            CString welcome;
+			welcome.Format(_T("Welcome %s (%s)"), (LPCTSTR)name, (LPCTSTR)email);
+            AfxMessageBox(welcome, MB_OK | MB_ICONINFORMATION);
             return true;
         }
         Sleep(5000);
@@ -57,7 +63,17 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
     ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid_s }, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
 
     if (std::holds_alternative<PollResponse>(resp)) {
-        AfxMessageBox(_T("Login successful!"), MB_OK | MB_ICONINFORMATION);
+        PollResponse response = std::get<PollResponse>(resp);
+        CString user(CA2T(response.user_id.c_str(), CP_UTF8));
+        CString name(CA2T(response.name.c_str(), CP_UTF8));
+        CString email(CA2T(response.email.c_str(), CP_UTF8));
+        WriteIniValue(_T("User"), _T("user_id"), user, path);
+        WriteIniValue(_T("User"), _T("session_id"), session_id, path);
+        WriteIniValue(_T("User"), _T("name"), name, path);
+        WriteIniValue(_T("User"), _T("email"), email, path);
+        CString welcome;
+        welcome.Format(_T("Welcome back %s (%s)"), (LPCTSTR)name, (LPCTSTR)email);
+        AfxMessageBox(welcome, MB_OK | MB_ICONINFORMATION);
         return true;
     }
     else if (std::holds_alternative<PollResponseError>(resp)) {
