@@ -46,9 +46,6 @@ static bool PerformLoginFlow(const CString& path) {
             WriteIniValue(_T("User"), _T("session_id"), uuid, path);
             WriteIniValue(_T("User"), _T("name"), name, path);
             WriteIniValue(_T("User"), _T("email"), email, path);
-            CString welcome;
-			welcome.Format(_T("Welcome %s (%s)"), (LPCTSTR)name, (LPCTSTR)email);
-            AfxMessageBox(welcome, MB_OK | MB_ICONINFORMATION);
             return true;
         }
         Sleep(5000);
@@ -65,7 +62,7 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
     CString device_id = GetComputerNameMFC();
     CString username = GetUsernameMFC();
     CString timestamp = GetIsoTimestamp();
-    CString action = ReadIniValue(_T("User"), _T("action"), _T("logout"), path);
+    CString action = _T("checksession");
 
     ApiResponse resp = HttpPost<DeviceEvent>(DeviceEvent
         {
@@ -78,10 +75,6 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
         }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
-
-        CString welcome;
-        welcome.Format(_T("Welcome back %s (%s)"), (LPCTSTR)name, (LPCTSTR)email);
-        AfxMessageBox(welcome, MB_OK | MB_ICONINFORMATION);
         return true;
     }
     else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
