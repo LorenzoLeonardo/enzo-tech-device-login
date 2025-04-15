@@ -214,6 +214,17 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin()
 		WriteIniValue(_T("User"), _T("action"), _T("login"), path);
 		m_ctrlBtnLogin.EnableWindow(FALSE);
 		m_ctrlBtnLogout.EnableWindow(TRUE);
+	} else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
+		DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
+		if (response.error_code == ErrorCodes::invalid_grant) {
+			WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+			WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+			AfxMessageBox(_T("Session has expired. Please run the program again."), MB_OK | MB_ICONERROR);
+		}
+		else {
+			AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+		}
+		EndDialog(IDOK);
 	}
 }
 
@@ -243,6 +254,17 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 		WriteIniValue(_T("User"), _T("action"), _T("logout"), path);
 		m_ctrlBtnLogin.EnableWindow(TRUE);
 		m_ctrlBtnLogout.EnableWindow(FALSE);
+	} else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
+		DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
+		if (response.error_code == ErrorCodes::invalid_grant) {
+			WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+			WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+			AfxMessageBox(_T("Session has expired. Please run the program again."), MB_OK | MB_ICONERROR);
+		}
+		else {
+			AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+		}
+		EndDialog(IDOK);
 	}
 }
 

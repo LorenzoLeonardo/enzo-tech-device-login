@@ -14,20 +14,20 @@ using json = nlohmann::json;
 enum class ErrorCodes {
     authorization_pending,
     invalid_request,
-    invalid_credentials,
-    device_not_registered,
     server_error,
     invalid_grant,
+    internal_error,
+    invalid_json
 };
 
 // Convert between enum and string
 NLOHMANN_JSON_SERIALIZE_ENUM(ErrorCodes, {
     {ErrorCodes::authorization_pending, "authorization_pending"},
     {ErrorCodes::invalid_request, "invalid_request"},
-    {ErrorCodes::invalid_credentials, "invalid_credentials"},
-    {ErrorCodes::device_not_registered, "device_not_registered"},
     {ErrorCodes::server_error, "server_error"},
-    {ErrorCodes::invalid_grant, "invalid_grant"}
+    {ErrorCodes::invalid_grant, "invalid_grant"},
+    {ErrorCodes::internal_error, "internal_error"},
+    {ErrorCodes::invalid_json, "invalid_json"}
 })
 
     // Define the PollRequest struct
