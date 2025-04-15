@@ -8,18 +8,22 @@ using json = nlohmann::json;
 
 #pragma comment(lib, "wininet.lib")
 
-
-
 // Define the error codes enum
 enum class ErrorCodes {
     authorization_pending,
-    invalid_request
+    invalid_request,
+    invalid_credentials,
+    device_not_registered,
+    server_error
 };
 
 // Convert between enum and string
 NLOHMANN_JSON_SERIALIZE_ENUM(ErrorCodes, {
     {ErrorCodes::authorization_pending, "authorization_pending"},
-    {ErrorCodes::invalid_request, "invalid_request"}
+    {ErrorCodes::invalid_request, "invalid_request"},
+    {ErrorCodes::invalid_credentials, "invalid_credentials"},
+    {ErrorCodes::device_not_registered, "device_not_registered"},
+    {ErrorCodes::server_error, "server_error"}
 })
 
     // Define the PollRequest struct
@@ -45,12 +49,21 @@ struct PollResponseError {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PollResponseError, error)
 
+struct DeviceLoginResponse {
+    bool success;
+    std::string error;
+    ErrorCodes error_code;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponse, success, error, error_code)
+
+using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponse>;
 
 template<typename TInput>
-std::variant<PollResponse, PollResponseError>
+ApiResponse
 HttpPost(const TInput& input, const CString& host, const CString& endpoint)
 {
-    std::variant<PollResponse, PollResponseError> output{};
+    ApiResponse output{};
     json j_input = input;
     std::string body = j_input.dump();
 
@@ -116,11 +129,18 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
     try {
         json j = json::parse(responseStr);
 
-        if (j.contains("error_code")) {
+        if (j.contains("success")) {
+            output = j.get<DeviceLoginResponse>();
+        }
+        else if (j.contains("error")) {
             output = j.get<PollResponseError>();
         }
-        else {
-            output = j.get<PollResponse>();
+		else if (j.contains("user_id") && j.contains("name") && j.contains("email")) {
+			output = j.get<PollResponse>();
+		}
+		else {
+			// Handle unexpected response
+			AfxMessageBox(_T("Unexpected response format"));
         }
     }
     catch (const json::exception& e) {

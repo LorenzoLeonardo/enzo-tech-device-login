@@ -121,7 +121,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	std::variant<PollResponse, PollResponseError> resp = HttpPost<PollRequest>(PollRequest{ "test_session_id" }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
+	ApiResponse resp = HttpPost<PollRequest>(PollRequest{ "test_session_id" }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 	// TODO: Add extra initialization here
 	//SendGetJsonRequest(_T("login")); // Example user ID
 	return TRUE;  // return TRUE  unless you set the focus to a control
