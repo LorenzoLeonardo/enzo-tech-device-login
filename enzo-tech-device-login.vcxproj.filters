@@ -77,5 +77,11 @@
     <Image Include="res\enzo-tech-device-login.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\Logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\android-icon-72x72.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

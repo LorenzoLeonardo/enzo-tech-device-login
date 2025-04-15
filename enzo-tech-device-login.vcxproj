@@ -215,7 +215,9 @@
     <None Include="res\enzotechdevicelogin.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\android-icon-72x72.bmp" />
     <Image Include="res\enzo-tech-device-login.ico" />
+    <Image Include="res\Logo.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
