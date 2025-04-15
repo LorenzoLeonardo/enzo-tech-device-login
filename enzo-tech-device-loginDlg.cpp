@@ -16,19 +16,14 @@
 using json = nlohmann::json;
 
 #include "Communicator.h"
+#include "utils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-CString GetIsoTimestamp();
 void SendPostJsonRequest(CString action, CString userId);
 void SendGetJsonRequest(CString userId);
-CString GetComputerNameMFC();
-CString GetUsernameMFC();
-CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR filePath);
-CString GetIniFilePath(LPCTSTR iniFileName);
-
 
 // CAboutDlg dialog used for App About
 
@@ -121,7 +116,6 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	ApiResponse resp = HttpPost<PollRequest>(PollRequest{ "test_session_id" }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 	// TODO: Add extra initialization here
 	//SendGetJsonRequest(_T("login")); // Example user ID
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -193,30 +187,6 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout()
 	SendPostJsonRequest(_T("logout"), user_id); // Example user ID
 }
 
-CString GetIsoTimestamp()
-{
-	SYSTEMTIME stLocal;
-	GetLocalTime(&stLocal); // Local time for correct timezone offset
-
-	// Simulate nanoseconds (7-digit fractional second)
-	int microFraction = stLocal.wMilliseconds * 10000 + rand() % 10000; // Rough simulation of 7 digits
-
-	// Get timezone offset
-	TIME_ZONE_INFORMATION tzi;
-	GetTimeZoneInformation(&tzi);
-
-	int biasMinutes = -tzi.Bias;
-	int hoursOffset = biasMinutes / 60;
-	int minutesOffset = abs(biasMinutes % 60);
-
-	CString iso;
-	iso.Format(_T("%04d-%02d-%02dT%02d:%02d:%02d.%07d%+03d:%02d"),
-		stLocal.wYear, stLocal.wMonth, stLocal.wDay,
-		stLocal.wHour, stLocal.wMinute, stLocal.wSecond,
-		microFraction, hoursOffset, minutesOffset);
-
-	return iso;
-}
 
 void SendPostJsonRequest(CString action, CString userId)
 {
@@ -416,54 +386,6 @@ void SendGetJsonRequest(CString userId)
 	InternetCloseHandle(hInternet);
 }
 
-CString GetComputerNameMFC()
-{
-	TCHAR nameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD size = sizeof(nameBuffer) / sizeof(nameBuffer[0]);
-
-	if (GetComputerName(nameBuffer, &size)) {
-		return CString(nameBuffer);
-	}
-	else {
-		return _T("Unknown");
-	}
-}
-
-CString GetUsernameMFC()
-{
-	TCHAR userName[UNLEN + 1];
-	DWORD size = UNLEN + 1;
-
-	if (GetUserName(userName, &size)) {
-		return CString(userName);
-	}
-	else {
-		return _T("UnknownUser");
-	}
-}
-
-CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR filePath)
-{
-	TCHAR buffer[256];
-	GetPrivateProfileString(section, key, defaultValue, buffer, sizeof(buffer) / sizeof(TCHAR), filePath);
-	return CString(buffer);
-}
-
-CString GetIniFilePath(LPCTSTR iniFileName)
-{
-	TCHAR exePath[MAX_PATH];
-	GetModuleFileName(NULL, exePath, MAX_PATH);
-
-	CString path(exePath);
-	int pos = path.ReverseFind(_T('\\'));
-	if (pos != -1)
-	{
-		path = path.Left(pos + 1);  // Keep the directory path
-	}
-
-	path += iniFileName;  // Append the ini filename
-	return path;
-}
 HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);

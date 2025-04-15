@@ -6,6 +6,8 @@
 #include "framework.h"
 #include "enzo-tech-device-login.h"
 #include "enzo-tech-device-loginDlg.h"
+#include "Communicator.h"
+#include "Uuid.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,6 +72,21 @@ BOOL CenzotechdeviceloginApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	std::string uuid = generate_uuid();	
+	ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
+
+	int typeIndex = resp.index();
+
+	// Use std::get to access the stored value
+	if (typeIndex == 0) { // PollResponse
+		PollResponse response = std::get<PollResponse>(resp);
+	}
+	else if (typeIndex == 1) { // PollResponseError
+		PollResponseError error = std::get<PollResponseError>(resp);
+	}
+	else if (typeIndex == 2) { // DeviceLoginResponse
+		DeviceLoginResponse loginResponse = std::get<DeviceLoginResponse>(resp);
+	}
 
 	CenzotechdeviceloginDlg dlg;
 	m_pMainWnd = &dlg;
