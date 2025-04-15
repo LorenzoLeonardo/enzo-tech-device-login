@@ -132,6 +132,8 @@ BOOL CenzotechdeviceloginApp::InitInstance()
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
+    AfxGetApp()->m_pszAppName = _tcsdup(_T("Enzo Tech Computer Solutions - Notice"));
+
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
