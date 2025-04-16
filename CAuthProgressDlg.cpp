@@ -38,7 +38,7 @@ BOOL CAuthProgressDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    SetTimer(1, 100, nullptr);  // 100ms interval for smooth rotation
+    SetTimer(1, 500, nullptr);  // 100ms interval for smooth rotation
     return TRUE;
 }
 
