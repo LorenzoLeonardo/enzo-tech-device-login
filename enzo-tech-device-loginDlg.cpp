@@ -62,18 +62,20 @@ END_MESSAGE_MAP()
 
 // CenzotechdeviceloginDlg dialog
 
-
+COLORREF DLG_BACKGROUND = RGB(13, 71, 161);
+COLORREF GROUP_BACKGROUND = RGB(66, 165, 245);
 
 CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ENZOTECHDEVICELOGIN_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
+	m_brBackground.CreateSolidBrush(DLG_BACKGROUND);
+	m_brGroupBox.CreateSolidBrush(GROUP_BACKGROUND);
 	m_customClock.SetFontStyle(_T("Yu Gothic UI"));
 	m_customClock.SetFontSize(40);
-	m_customClock.SetFontWeight(FW_NORMAL);
+	m_customClock.SetFontWeight(FW_BOLD);
 	m_customClock.SetTextColor(RGB(255, 255, 255));
-	m_customClock.SetTextBKColor(RGB(93, 107, 153));
+	m_customClock.SetTextBKColor(DLG_BACKGROUND);
 	m_customClock.CreateClock();
 }
 CenzotechdeviceloginDlg::~CenzotechdeviceloginDlg() {
@@ -140,8 +142,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
 		}
 	}
-	m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
-	m_brGroupBox.CreateSolidBrush(RGB(66, 165, 245));
+
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon

@@ -89,18 +89,20 @@ CString CCustomClock::GetDateTime() {
 	return csDateTime;
 }
 void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
-	// 1. Clear previous clock area
+	// 1. Clear previous clock area with inflation for padding
 	CRect inflatedRect = m_rectClock;
-	inflatedRect.InflateRect(15, 10); // Expand by 5 pixels on all sides
+	inflatedRect.InflateRect(15, 10); // Padding around previous rect
+	//dcSrc->SetBkMode(OPAQUE);
 	dcSrc->FillSolidRect(&inflatedRect, m_textBKColor);
 
+	// 2. Prepare variables
 	SYSTEMTIME sysTime;
 	SIZE sizeTime = {}, sizeAMPM = {}, sizeDate = {};
 	TEXTMETRIC tmTime = {}, tmDate = {};
-	CString csTime = _T(""), csAMPM = _T(""), csDate = _T("");
+	CString csTime, csAMPM, csDate;
 	WORD wHour = 0;
 
-	// 2. Get current time
+	// 3. Get current time
 	GetLocalTime(&sysTime);
 	wHour = sysTime.wHour;
 	if (wHour == 0)
@@ -108,7 +110,7 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
 	else if (wHour > 12)
 		wHour -= 12;
 
-	// Format time, AM/PM, and date strings
+	// 4. Format strings
 	csTime.Format(_T("%d:%02d:%02d"), wHour, sysTime.wMinute, sysTime.wSecond);
 	csAMPM = (sysTime.wHour >= 12) ? _T(" PM") : _T(" AM");
 	csDate.Format(
@@ -117,38 +119,32 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
 		GetMonthName(sysTime.wMonth).GetBuffer(), sysTime.wDay, sysTime.wYear
 	);
 
-	// 3. Draw Time
+	// 5. Draw time
 	dcSrc->SetBkMode(TRANSPARENT);
 	dcSrc->SetTextColor(m_textColor);
-	dcSrc->SetBkColor(m_textBKColor);
 	CFont* pOldFont = dcSrc->SelectObject(&m_cfont);
-
 	dcSrc->TextOut(x, y, csTime);
-
 	GetTextExtentPoint32(dcSrc->GetSafeHdc(), csTime, csTime.GetLength(), &sizeTime);
 	GetTextMetrics(dcSrc->GetSafeHdc(), &tmTime);
 	dcSrc->SelectObject(pOldFont);
 
-	// 4. Draw AM/PM
-	dcSrc->SetBkMode(TRANSPARENT);
+	// 6. Draw AM/PM
 	dcSrc->SetTextColor(m_textColor);
 	pOldFont = dcSrc->SelectObject(&m_cFontAMPM);
 	dcSrc->TextOut(x + sizeTime.cx, y + (tmTime.tmAscent / 2), csAMPM);
-
 	GetTextExtentPoint32(dcSrc->GetSafeHdc(), csAMPM, csAMPM.GetLength(), &sizeAMPM);
 	dcSrc->SelectObject(pOldFont);
 
-	// 5. Draw Date
-	dcSrc->SetBkMode(TRANSPARENT);
+	// 7. Draw Date
 	dcSrc->SetTextColor(m_textColor);
 	pOldFont = dcSrc->SelectObject(&m_cFontDate);
-	dcSrc->TextOut(x, y + tmTime.tmHeight, csDate);
-
+	int yDate = y + tmTime.tmHeight;
+	dcSrc->TextOut(x, yDate, csDate);
 	GetTextExtentPoint32(dcSrc->GetSafeHdc(), csDate, csDate.GetLength(), &sizeDate);
 	GetTextMetrics(dcSrc->GetSafeHdc(), &tmDate);
 	dcSrc->SelectObject(pOldFont);
 
-	// 6. Update m_rectClock to wrap entire area
+	// 8. Update clock rect for the next redraw
 	int totalWidth = max(sizeTime.cx + sizeAMPM.cx, sizeDate.cx);
 	int totalHeight = tmTime.tmHeight + tmDate.tmHeight;
 
