@@ -6,7 +6,6 @@
 #include "afxdialogex.h"
 #include "CAuthProgressDlg.h"
 
-
 // CAuthProgressDlg dialog
 
 IMPLEMENT_DYNAMIC(CAuthProgressDlg, CDialogEx)
@@ -14,7 +13,7 @@ IMPLEMENT_DYNAMIC(CAuthProgressDlg, CDialogEx)
 CAuthProgressDlg::CAuthProgressDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_AUTH_PROGRESS, pParent), m_Frame(0)
 {
-
+    m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
 }
 
 CAuthProgressDlg::~CAuthProgressDlg()
@@ -32,6 +31,7 @@ BEGIN_MESSAGE_MAP(CAuthProgressDlg, CDialogEx)
 	ON_WM_TIMER()
     ON_BN_CLICKED(IDCANCEL, &CAuthProgressDlg::OnBnClickedCancel)
     ON_WM_DESTROY()
+    ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 BOOL CAuthProgressDlg::OnInitDialog()
@@ -60,7 +60,7 @@ void CAuthProgressDlg::OnPaint()
         int alpha = (i == m_Frame) ? 255 : 100;
         int r = (i == m_Frame) ? radius + 2 : radius;
 
-        COLORREF color = RGB(0, 0, 0);
+        COLORREF color = RGB(255, 255, 255);
         CBrush brush;
         brush.CreateSolidBrush(color);
         CBrush* pOldBrush = dc.SelectObject(&brush);
@@ -90,4 +90,21 @@ void CAuthProgressDlg::OnDestroy()
     m_hasCancelled = true;
     KillTimer(1);
     CDialogEx::OnDestroy();
+}
+HBRUSH CAuthProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // Set dialog background color
+    if (nCtlColor == CTLCOLOR_DLG)
+    {
+        return (HBRUSH)m_brBackground.GetSafeHandle();
+    }
+    if (pWnd->GetDlgCtrlID() == IDC_STATIC_AUTHENTICATING_LABEL)
+    {
+        pDC->SetBkMode(TRANSPARENT);
+        pDC->SetTextColor(RGB(255,255,255));
+        return (HBRUSH)m_brBackground.GetSafeHandle();
+    }
+    return hbr;
 }

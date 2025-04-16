@@ -19,6 +19,7 @@ public:
 private:
 	int m_Frame; // Current frame in animation (0 to 4)
 	bool m_hasCancelled = false;
+	CBrush m_brBackground;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_AUTH_PROGRESS };
@@ -34,4 +35,5 @@ public:
 	bool HasCancelled() {
 		return m_hasCancelled;
 	}
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
