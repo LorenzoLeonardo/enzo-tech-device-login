@@ -38,7 +38,7 @@ BOOL CAuthProgressDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    SetTimer(1, 500, nullptr);  // 100ms interval for smooth rotation
+    SetTimer(1, 100, nullptr);  // 100ms interval for smooth rotation
     return TRUE;
 }
 
@@ -48,25 +48,30 @@ void CAuthProgressDlg::OnPaint()
     CRect rect;
     GetClientRect(&rect);
 
-    const int dotCount = 5;
-    const int spacing = 20;
-    const int radius = 5;
+    const int dotCount = 10;
+    const int radius = 4;
+    const int orbitRadius = 20; // Distance from center to dot
+    const double angleStep = 2 * 3.14159265 / dotCount;
 
-    int startX = rect.Width() / 2 - ((dotCount - 1) * spacing) / 2;
-    int y = rect.Height() / 2;
+    CPoint center(rect.Width() / 2, rect.Height() / 2);
 
     for (int i = 0; i < dotCount; ++i)
     {
-        int alpha = (i == m_Frame) ? 255 : 100;
-        int r = (i == m_Frame) ? radius + 2 : radius;
+        // Calculate the angle for each dot with rotation
+        double angle = angleStep * ((i + m_Frame) % dotCount);
 
-        COLORREF color = RGB(255, 255, 255);
+        int x = static_cast<int>(center.x + orbitRadius * cos(angle));
+        int y = static_cast<int>(center.y + orbitRadius * sin(angle));
+
+        int alpha = (i == 0) ? 255 : 100; // Highlight one dot optionally
+        int r = (i == 0) ? radius + 2 : radius;
+
+        COLORREF color = RGB(255, 255, 255); // Could be alpha blended if layered window
         CBrush brush;
         brush.CreateSolidBrush(color);
         CBrush* pOldBrush = dc.SelectObject(&brush);
         dc.SetBkMode(TRANSPARENT);
 
-        int x = startX + i * spacing;
         dc.Ellipse(x - r, y - r, x + r, y + r);
 
         dc.SelectObject(pOldBrush);
@@ -75,7 +80,7 @@ void CAuthProgressDlg::OnPaint()
 
 void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent)
 {
-    m_Frame = (m_Frame + 1) % 5;
+    m_Frame = (m_Frame + 1) % 10;
     Invalidate();
     CDialogEx::OnTimer(nIDEvent);
 }
