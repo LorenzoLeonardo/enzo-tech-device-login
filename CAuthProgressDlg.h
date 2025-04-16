@@ -18,6 +18,7 @@ public:
 	afx_msg void OnDestroy();
 private:
 	int m_Frame; // Current frame in animation (0 to 4)
+	bool m_hasCancelled = false;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_AUTH_PROGRESS };
@@ -30,4 +31,7 @@ protected:
 
 public:
 	afx_msg void OnBnClickedCancel();
+	bool HasCancelled() {
+		return m_hasCancelled;
+	}
 };

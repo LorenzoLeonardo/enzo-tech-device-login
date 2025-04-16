@@ -28,7 +28,7 @@ static bool IsDefaultSession(const CString& session_id, const CString& user_id) 
     return (session_id == _T("default_session_id") || user_id == _T("default_user_id"));
 }
 
-static bool PerformLoginFlow(const CString& path) {
+static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
@@ -36,7 +36,7 @@ static bool PerformLoginFlow(const CString& path) {
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
 
     int attempts = 0;
-    while (attempts++ < 12) {
+    while (!pWaitDlg->HasCancelled()) {
         ApiResponse resp = HttpPost<PollRequest>(PollRequest{ uuid_s }, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
         if (std::holds_alternative<PollResponse>(resp)) {
             PollResponse response = std::get<PollResponse>(resp);
@@ -51,8 +51,6 @@ static bool PerformLoginFlow(const CString& path) {
         }
         Sleep(5000);
     }
-
-    AfxMessageBox(_T("Login timeout. Please try again."), MB_OK | MB_ICONERROR);
     return false;
 }
 
@@ -150,9 +148,9 @@ BOOL CenzotechdeviceloginApp::InitInstance()
     CAuthProgressDlg* pWaitDlg = new CAuthProgressDlg();
     pWaitDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pWaitDlg->ShowWindow(SW_SHOW);
-    std::thread authThread([&isDone, &is_success, user_id, path, session_id, isDefault]() {
+    std::thread authThread([&isDone, &is_success, user_id, path, session_id, isDefault, pWaitDlg]() {
         if (isDefault) {
-            is_success = PerformLoginFlow(path);
+            is_success = PerformLoginFlow(path, pWaitDlg);
         }
         else {
             is_success = CheckExistingSession(session_id, path);

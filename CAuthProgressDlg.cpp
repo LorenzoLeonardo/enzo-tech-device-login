@@ -82,10 +82,12 @@ void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent)
 void CAuthProgressDlg::OnBnClickedCancel()
 {
     // TODO: Add your control notification handler code here
+    m_hasCancelled = true;
     CDialogEx::OnCancel();
 }
 void CAuthProgressDlg::OnDestroy()
 {
+    m_hasCancelled = true;
     KillTimer(1);
     CDialogEx::OnDestroy();
 }

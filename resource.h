@@ -21,6 +21,8 @@
 #define IDC_CUSTOM1                     1010
 #define IDC_MY_GROUPBOX                 1010
 #define IDC_STATIC_PICTURE              1011
+#define IDC_STATIC_AUTH                 1012
+#define IDC_STATIC_AUTHENTICATING_LABEL 1012
 
 // Next default values for new objects
 // 
@@ -28,7 +30,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
