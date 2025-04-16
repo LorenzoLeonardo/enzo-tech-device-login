@@ -18,6 +18,7 @@ using json = nlohmann::json;
 #include "Communicator.h"
 #include "utils.h"
 #include <atlconv.h>
+#include <atomic>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,6 +68,16 @@ CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ENZOTECHDEVICELOGIN_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	m_customClock.SetFontStyle(_T("Yu Gothic UI"));
+	m_customClock.SetFontSize(40);
+	m_customClock.SetFontWeight(FW_NORMAL);
+	m_customClock.SetTextColor(RGB(255, 255, 255));
+	m_customClock.SetTextBKColor(RGB(93, 107, 153));
+	m_customClock.CreateClock();
+}
+CenzotechdeviceloginDlg::~CenzotechdeviceloginDlg() {
+	m_customClock.DestroyClock();
 }
 
 void CenzotechdeviceloginDlg::DoDataExchange(CDataExchange* pDX)
@@ -88,8 +99,21 @@ BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
 	ON_WM_SETCURSOR()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
+void CenzotechdeviceloginDlg::UpdateClock() {
+	CClientDC cdc(this);
+	m_customClock.DrawClock(&cdc, 420, 30);
+}
+unsigned __stdcall CenzotechdeviceloginDlg::ClockThread(void* parg) {
+	CenzotechdeviceloginDlg* pDlg = (CenzotechdeviceloginDlg*)parg;
+	while (!pDlg->HasClickClose()) {
+		pDlg->UpdateClock();
+		Sleep(100);
+	}
+	return 0;
+}
 
 // CenzotechdeviceloginDlg message handlers
 
@@ -140,6 +164,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 		m_ctrlBtnLogin.EnableWindow(TRUE);
 		m_ctrlBtnLogout.EnableWindow(FALSE);
 	}
+	m_hThreadClock = (HANDLE)_beginthreadex(NULL, 0, ClockThread, this, 0, NULL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -197,6 +222,7 @@ void CenzotechdeviceloginDlg::OnPaint()
 			ScreenToClient(&rect);
 
 			dc.FillSolidRect(&rect, RGB(66, 165, 245));
+			CDialogEx::OnPaint();
 		}
 	}
 }
@@ -565,4 +591,26 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			NULL, SW_SHOWNORMAL);
 	}
 	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+//void CenzotechdeviceloginDlg::OnOK()
+//{
+//	m_bClickClose.store(true);
+//	if (m_hThreadClock) {
+//		WaitForSingleObject(m_hThreadClock, INFINITE);
+//		CloseHandle(m_hThreadClock);
+//		m_hThreadClock = NULL;
+//	}
+//	CDialogEx::OnOK();
+//}
+
+void CenzotechdeviceloginDlg::OnClose()
+{
+	m_bClickClose.store(true);
+	if (m_hThreadClock) {
+		WaitForSingleObject(m_hThreadClock, INFINITE);
+		CloseHandle(m_hThreadClock);
+		m_hThreadClock = NULL;
+	}
+	CDialogEx::OnOK();
 }

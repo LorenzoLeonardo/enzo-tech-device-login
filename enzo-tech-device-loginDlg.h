@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include "CCustomClock.h"
+#include <atomic>
 
 // CenzotechdeviceloginDlg dialog
 class CenzotechdeviceloginDlg : public CDialogEx
@@ -11,7 +12,7 @@ class CenzotechdeviceloginDlg : public CDialogEx
 // Construction
 public:
 	CenzotechdeviceloginDlg(CWnd* pParent = nullptr);	// standard constructor
-
+	~CenzotechdeviceloginDlg();
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ENZOTECHDEVICELOGIN_DIALOG };
@@ -28,6 +29,8 @@ protected:
 	CBrush m_brGroupBox;
 
 	CButton m_myGroupBox;
+	CCustomClock m_customClock;
+
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -44,4 +47,15 @@ public:
 	CStatic m_ctrlStaticLogo;
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
+	static unsigned __stdcall ClockThread(void* parg);
+	void UpdateClock();
+	bool HasClickClose() const { return m_bClickClose.load(); }
+
+private:
+	HANDLE m_hThreadClock = NULL;
+	std::atomic<bool> m_bClickClose = false;
+//	virtual void OnOK();
+public:
+	afx_msg void OnClose();
 };

@@ -187,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCustomClock.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="enzo-tech-device-login.h" />
     <ClInclude Include="enzo-tech-device-loginDlg.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Uuid.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCustomClock.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="enzo-tech-device-login.cpp" />
     <ClCompile Include="enzo-tech-device-loginDlg.cpp" />
