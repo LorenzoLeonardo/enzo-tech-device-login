@@ -5,6 +5,7 @@
 #pragma once
 #include "CCustomClock.h"
 #include <atomic>
+#include <thread>
 
 // CenzotechdeviceloginDlg dialog
 class CenzotechdeviceloginDlg : public CDialogEx
@@ -48,14 +49,15 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 
-	static unsigned __stdcall ClockThread(void* parg);
+	void ClockThread();
 	void UpdateClock();
 	bool HasClickClose() const { return m_bClickClose.load(); }
 
 private:
-	HANDLE m_hThreadClock = NULL;
+	std::thread m_clockThread;
 	std::atomic<bool> m_bClickClose = false;
 //	virtual void OnOK();
 public:
-	afx_msg void OnClose();
+//	afx_msg void OnClose();
+	afx_msg void OnDestroy();
 };

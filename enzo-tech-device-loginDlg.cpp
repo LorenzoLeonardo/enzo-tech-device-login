@@ -101,20 +101,18 @@ BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
 	ON_WM_SETCURSOR()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
-	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 void CenzotechdeviceloginDlg::UpdateClock() {
 	CClientDC cdc(this);
 	m_customClock.DrawClock(&cdc, 420, 30);
 }
-unsigned __stdcall CenzotechdeviceloginDlg::ClockThread(void* parg) {
-	CenzotechdeviceloginDlg* pDlg = (CenzotechdeviceloginDlg*)parg;
-	while (!pDlg->HasClickClose()) {
-		pDlg->UpdateClock();
-		Sleep(100);
+void CenzotechdeviceloginDlg::ClockThread() {
+	while (!m_bClickClose) {
+		UpdateClock();
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
-	return 0;
 }
 
 // CenzotechdeviceloginDlg message handlers
@@ -165,7 +163,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog()
 		m_ctrlBtnLogin.EnableWindow(TRUE);
 		m_ctrlBtnLogout.EnableWindow(FALSE);
 	}
-	m_hThreadClock = (HANDLE)_beginthreadex(NULL, 0, ClockThread, this, 0, NULL);
+	m_clockThread = std::thread(&CenzotechdeviceloginDlg::ClockThread, this);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -594,24 +592,13 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
-//void CenzotechdeviceloginDlg::OnOK()
-//{
-//	m_bClickClose.store(true);
-//	if (m_hThreadClock) {
-//		WaitForSingleObject(m_hThreadClock, INFINITE);
-//		CloseHandle(m_hThreadClock);
-//		m_hThreadClock = NULL;
-//	}
-//	CDialogEx::OnOK();
-//}
-
-void CenzotechdeviceloginDlg::OnClose()
+void CenzotechdeviceloginDlg::OnDestroy()
 {
-	m_bClickClose.store(true);
-	if (m_hThreadClock) {
-		WaitForSingleObject(m_hThreadClock, INFINITE);
-		CloseHandle(m_hThreadClock);
-		m_hThreadClock = NULL;
+	CDialogEx::OnDestroy();
+
+	// TODO: Add your message handler code here
+	m_bClickClose = true;  // signal thread to exit
+	if (m_clockThread.joinable()) {
+		m_clockThread.join();  // wait for thread to finish
 	}
-	CDialogEx::OnOK();
 }
