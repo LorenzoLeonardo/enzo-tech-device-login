@@ -9,8 +9,9 @@
 #include "Communicator.h"
 #include "Uuid.h"
 #include "utils.h"
-
+#include "CAuthProgressDlg.h"
 #include <atlconv.h>
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -138,15 +139,45 @@ BOOL CenzotechdeviceloginApp::InitInstance()
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
 
-    USES_CONVERSION;
     bool is_success = false;
+    bool isDone = false;
+    bool isDefault = false;
 
     if (IsDefaultSession(session_id, user_id)) {
+        isDefault = true;
         AfxMessageBox(_T("Session ID or User ID is not set. Please log in first."));
-        is_success = PerformLoginFlow(path);
     }
-    else {
-        is_success = CheckExistingSession(session_id, path);
+    CAuthProgressDlg* pWaitDlg = new CAuthProgressDlg();
+    pWaitDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
+    pWaitDlg->ShowWindow(SW_SHOW);
+    std::thread authThread([&isDone, &is_success, user_id, path, session_id, isDefault]() {
+        if (isDefault) {
+            is_success = PerformLoginFlow(path);
+        }
+        else {
+            is_success = CheckExistingSession(session_id, path);
+        }
+        isDone = true;
+    });
+    authThread.detach();
+
+    // Pump messages while waiting
+    MSG msg;
+    while (!isDone)
+    {
+        while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+        }
+        Sleep(10); // Let CPU rest
+    }
+
+    // Done — close the dialog
+    if (pWaitDlg && ::IsWindow(pWaitDlg->GetSafeHwnd()))
+    {
+        pWaitDlg->DestroyWindow();
+        delete pWaitDlg;
     }
 
     if (is_success) {

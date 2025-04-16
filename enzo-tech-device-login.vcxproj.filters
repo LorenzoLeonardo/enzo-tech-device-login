@@ -45,6 +45,9 @@
     <ClInclude Include="CCustomClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CAuthProgressDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="enzo-tech-device-login.cpp">
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CCustomClock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CAuthProgressDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
