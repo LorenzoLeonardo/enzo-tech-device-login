@@ -266,10 +266,14 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         },
         _T("enzotechcomputersolutions.com"), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
-        AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
-        WriteIniValue(_T("User"), _T("action"), _T("login"), path);
+        DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
+        CString                    login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+
+        WriteIniValue(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
+
+        AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
@@ -306,10 +310,14 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         },
         _T("enzotechcomputersolutions.com"), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
-        AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
-        WriteIniValue(_T("User"), _T("action"), _T("logout"), path);
+        DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
+        CString                    login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+
+        WriteIniValue(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
+
+        AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
