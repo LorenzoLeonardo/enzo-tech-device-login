@@ -63,7 +63,7 @@ CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
     m_brBackground.CreateSolidBrush(DLG_BACKGROUND);
     m_brGroupBox.CreateSolidBrush(GROUP_BACKGROUND);
     m_customClock.SetFontStyle(_T("Yu Gothic UI"));
-    m_customClock.SetFontSize(40);
+    m_customClock.SetFontSize(28);
     m_customClock.SetFontWeight(FW_BOLD);
     m_customClock.SetTextColor(RGB(255, 255, 255));
     m_customClock.SetTextBKColor(DLG_BACKGROUND);
@@ -98,9 +98,21 @@ void CenzotechdeviceloginDlg::UpdateClock() {
     CClientDC cdc(this);
     CRect     rect;
 
+    // Get the DPI scaling for this DC
+    int    dpiX   = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSX);
+    int    dpiY   = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSY);
+    double scaleX = dpiX / 96.0;
+    double scaleY = dpiY / 96.0;
+
+    // Get the group box position
     GetDlgItem(IDC_MY_GROUPBOX)->GetWindowRect(&rect);
     ScreenToClient(&rect);
-    m_customClock.DrawClock(&cdc, rect.left, rect.left);
+
+    // Apply scaling to clock position
+    int x = static_cast<int>((rect.left / scaleX));
+    int y = static_cast<int>((rect.left / scaleY)); // relative to the top of the dialog
+
+    m_customClock.DrawClock(&cdc, x, y);
 }
 void CenzotechdeviceloginDlg::ClockThread() {
     while (!m_bClickClose) {
