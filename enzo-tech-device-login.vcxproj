@@ -218,6 +218,7 @@
     <ResourceCompile Include="enzotechdevicelogin.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".clang-format" />
     <None Include="res\enzotechdevicelogin.rc2" />
   </ItemGroup>
   <ItemGroup>

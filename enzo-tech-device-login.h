@@ -5,28 +5,26 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "include 'pch.h' before including this file for PCH"
+#    error "include 'pch.h' before including this file for PCH"
 #endif
 
-#include "resource.h"		// main symbols
-
+#include "resource.h" // main symbols
 
 // CenzotechdeviceloginApp:
 // See enzo-tech-device-login.cpp for the implementation of this class
 //
 
-class CenzotechdeviceloginApp : public CWinApp
-{
-public:
-	CenzotechdeviceloginApp();
-	void ShowMainDialog();
-// Overrides
-public:
-	virtual BOOL InitInstance();
+class CenzotechdeviceloginApp : public CWinApp {
+  public:
+    CenzotechdeviceloginApp();
+    void ShowMainDialog();
+    // Overrides
+  public:
+    virtual BOOL InitInstance();
 
-// Implementation
+    // Implementation
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 extern CenzotechdeviceloginApp theApp;

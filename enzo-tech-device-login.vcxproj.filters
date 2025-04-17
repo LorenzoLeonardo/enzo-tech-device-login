@@ -84,6 +84,7 @@
     <None Include="res\enzotechdevicelogin.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\enzo-tech-device-login.ico">
