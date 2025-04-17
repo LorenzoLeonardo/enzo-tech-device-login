@@ -43,10 +43,12 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
             CString user(CA2T(response.user_id.c_str(), CP_UTF8));
             CString name(CA2T(response.name.c_str(), CP_UTF8));
             CString email(CA2T(response.email.c_str(), CP_UTF8));
+            CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
             WriteIniValue(_T("User"), _T("user_id"), user, path);
             WriteIniValue(_T("User"), _T("session_id"), uuid, path);
             WriteIniValue(_T("User"), _T("name"), name, path);
             WriteIniValue(_T("User"), _T("email"), email, path);
+            WriteIniValue(_T("User"), _T("action"), login_status, path);
             return true;
         }
         Sleep(5000);
@@ -74,6 +76,9 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
         }, _T("enzotechcomputersolutions.com"), _T("/device_login"));
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
+        DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
+        CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+        WriteIniValue(_T("User"), _T("action"), login_status, path);
         return true;
     }
     else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {

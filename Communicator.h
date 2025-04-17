@@ -42,9 +42,10 @@ struct PollResponse {
     std::string user_id;
     std::string name;
     std::string email;
+    std::string login_status;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PollResponse, user_id, name, email)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PollResponse, user_id, name, email, login_status)
 
 // Define the PollResponseError struct
 struct PollResponseError {
@@ -57,15 +58,17 @@ struct DeviceLoginResponseError {
     bool success;
     std::string error;
     ErrorCodes error_code;
+    std::string login_status;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseError, success, error, error_code)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseError, success, error, error_code, login_status)
 
 struct DeviceLoginResponseSuccess {
     bool success;
+    std::string login_status;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseSuccess, success)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseSuccess, success, login_status)
 
 struct DeviceEvent {
     std::string session_id;
@@ -149,17 +152,17 @@ HttpPost(const TInput& input, const CString& host, const CString& endpoint)
         json j = json::parse(responseStr);
 
         if (j.contains("success") && j.contains("error") && !j["error"].is_null() &&
-            j.contains("error_code") && !j["error_code"].is_null()) {
+            j.contains("error_code") && !j["error_code"].is_null() && j.contains("login_status")) {
             output = j.get<DeviceLoginResponseError>();
         }
         else if (j.contains("success") && j.contains("error") && j["error"].is_null() &&
-            j.contains("error_code") && j["error_code"].is_null()) {
+            j.contains("error_code") && j["error_code"].is_null() && j.contains("login_status")) {
             output = j.get<DeviceLoginResponseSuccess>();
         }
         else if (j.contains("error")) {
             output = j.get<PollResponseError>();
         }
-		else if (j.contains("user_id") && j.contains("name") && j.contains("email")) {
+		else if (j.contains("user_id") && j.contains("name") && j.contains("email") && j.contains("login_status")) {
 			output = j.get<PollResponse>();
 		}
 		else {
