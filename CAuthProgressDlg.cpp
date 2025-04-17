@@ -39,13 +39,13 @@ BOOL CAuthProgressDlg::OnInitDialog() {
 
 void CAuthProgressDlg::OnPaint() {
     CPaintDC dc(this);
-    CRect    rect;
+    CRect rect;
     GetClientRect(&rect);
 
-    const int    dotCount    = 10;
-    const int    radius      = 4;
-    const int    orbitRadius = 20; // Distance from center to dot
-    const double angleStep   = 2 * 3.14159265 / dotCount;
+    const int dotCount = 10;
+    const int radius = 4;
+    const int orbitRadius = 20; // Distance from center to dot
+    const double angleStep = 2 * 3.14159265 / dotCount;
 
     CPoint center(rect.Width() / 2, rect.Height() / 2);
 
@@ -57,10 +57,10 @@ void CAuthProgressDlg::OnPaint() {
         int y = static_cast<int>(center.y + orbitRadius * sin(angle));
 
         int alpha = (i == 0) ? 255 : 100; // Highlight one dot optionally
-        int r     = (i == 0) ? radius + 2 : radius;
+        int r = (i == 0) ? radius + 2 : radius;
 
         COLORREF color = RGB(255, 255, 255); // Could be alpha blended if layered window
-        CBrush   brush;
+        CBrush brush;
         brush.CreateSolidBrush(color);
         CBrush* pOldBrush = dc.SelectObject(&brush);
         dc.SetBkMode(TRANSPARENT);
@@ -76,16 +76,19 @@ void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent) {
     Invalidate();
     CDialogEx::OnTimer(nIDEvent);
 }
+
 void CAuthProgressDlg::OnBnClickedCancel() {
     // TODO: Add your control notification handler code here
     m_hasCancelled = true;
     CDialogEx::OnCancel();
 }
+
 void CAuthProgressDlg::OnDestroy() {
     m_hasCancelled = true;
     KillTimer(1);
     CDialogEx::OnDestroy();
 }
+
 HBRUSH CAuthProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
     HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 

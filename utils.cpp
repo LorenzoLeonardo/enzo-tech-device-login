@@ -1,5 +1,6 @@
-#include "utils.h"
 #include "pch.h"
+
+#include "utils.h"
 
 CString GetComputerNameMFC() {
     TCHAR nameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -41,7 +42,7 @@ CString GetIniFilePath(LPCTSTR iniFileName) {
     GetModuleFileName(NULL, exePath, MAX_PATH);
 
     CString path(exePath);
-    int     pos = path.ReverseFind(_T('\\'));
+    int pos = path.ReverseFind(_T('\\'));
     if (pos != -1) {
         path = path.Left(pos + 1); // Keep the directory path
     }
@@ -62,8 +63,8 @@ CString GetIsoTimestamp() {
     TIME_ZONE_INFORMATION tzi;
     GetTimeZoneInformation(&tzi);
 
-    int biasMinutes   = -tzi.Bias;
-    int hoursOffset   = biasMinutes / 60;
+    int biasMinutes = -tzi.Bias;
+    int hoursOffset = biasMinutes / 60;
     int minutesOffset = abs(biasMinutes % 60);
 
     CString iso;

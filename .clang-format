@@ -8,8 +8,8 @@ AllowShortLoopsOnASingleLine: false
 ColumnLimit: 100
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
 AlignOperands: true
 AlignTrailingComments: true
 SpacesInParentheses: false

@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 
 // CenzotechdeviceloginDlg dialog
 
-COLORREF DLG_BACKGROUND   = RGB(13, 71, 161);
+COLORREF DLG_BACKGROUND = RGB(13, 71, 161);
 COLORREF GROUP_BACKGROUND = RGB(66, 165, 245);
 
 CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
@@ -96,11 +96,11 @@ END_MESSAGE_MAP()
 
 void CenzotechdeviceloginDlg::UpdateClock() {
     CClientDC cdc(this);
-    CRect     rect;
+    CRect rect;
 
     // Get the DPI scaling for this DC
-    int    dpiX   = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSX);
-    int    dpiY   = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSY);
+    int dpiX = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSX);
+    int dpiY = GetDeviceCaps(cdc.GetSafeHdc(), LOGPIXELSY);
     double scaleX = dpiX / 96.0;
     double scaleY = dpiY / 96.0;
 
@@ -134,7 +134,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
 
     CMenu* pSysMenu = GetSystemMenu(FALSE);
     if (pSysMenu != nullptr) {
-        BOOL    bNameValid;
+        BOOL bNameValid;
         CString strAboutMenu;
         bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
         ASSERT(bNameValid);
@@ -149,11 +149,11 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
     SetIcon(m_hIcon, TRUE);  // Set big icon
     SetIcon(m_hIcon, FALSE); // Set small icon
 
-    CString path        = GetIniFilePath(_T("user.ini"));
-    CString name        = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
-    CString email       = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+    CString path = GetIniFilePath(_T("user.ini"));
+    CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+    CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
     CString prev_action = ReadIniValue(_T("User"), _T("action"), _T("logout"), path);
-    CString device_id   = GetComputerNameMFC();
+    CString device_id = GetComputerNameMFC();
     SetDlgItemText(IDC_EDIT_NAME, name);
     SetDlgItemText(IDC_EDIT_EMAIL, email);
     SetDlgItemText(IDC_EDIT_DEVICE_ID, device_id);
@@ -189,8 +189,8 @@ void CenzotechdeviceloginDlg::OnPaint() {
         SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
         // Center icon in client rectangle
-        int   cxIcon = GetSystemMetrics(SM_CXICON);
-        int   cyIcon = GetSystemMetrics(SM_CYICON);
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
         CRect rect;
         GetClientRect(&rect);
         int x = (rect.Width() - cxIcon + 1) / 2;
@@ -210,9 +210,9 @@ void CenzotechdeviceloginDlg::OnPaint() {
             CRect rect;
             pGroup->GetWindowRect(&rect);
 
-            int    dpiY   = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSY);
+            int dpiY = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSY);
             double scaleY = dpiY / 96.0;
-            int    y      = static_cast<int>((10 * scaleY));
+            int y = static_cast<int>((10 * scaleY));
 
             rect.top += y;
             ScreenToClient(&rect);
@@ -262,15 +262,15 @@ HCURSOR CenzotechdeviceloginDlg::OnQueryDragIcon() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
-    CString path       = GetIniFilePath(_T("user.ini"));
+    CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-    CString user_id    = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-    CString name       = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
-    CString email      = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
-    CString device_id  = GetComputerNameMFC();
-    CString username   = GetUsernameMFC();
-    CString timestamp  = GetIsoTimestamp();
-    CString action     = _T("login");
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+    CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+    CString device_id = GetComputerNameMFC();
+    CString username = GetUsernameMFC();
+    CString timestamp = GetIsoTimestamp();
+    CString action = _T("login");
 
     ApiResponse resp = HttpPost<DeviceEvent>(
         DeviceEvent{
@@ -284,7 +284,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         _T("enzotechcomputersolutions.com"), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
-        CString                    login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+        CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
 
         WriteIniValue(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(FALSE);
@@ -306,15 +306,15 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
-    CString path       = GetIniFilePath(_T("user.ini"));
+    CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-    CString user_id    = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-    CString name       = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
-    CString email      = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
-    CString device_id  = GetComputerNameMFC();
-    CString username   = GetUsernameMFC();
-    CString timestamp  = GetIsoTimestamp();
-    CString action     = _T("logout");
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+    CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+    CString device_id = GetComputerNameMFC();
+    CString username = GetUsernameMFC();
+    CString timestamp = GetIsoTimestamp();
+    CString action = _T("logout");
 
     ApiResponse resp = HttpPost<DeviceEvent>(
         DeviceEvent{
@@ -328,7 +328,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         _T("enzotechcomputersolutions.com"), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
-        CString                    login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+        CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
 
         WriteIniValue(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(TRUE);
@@ -355,9 +355,9 @@ void CenzotechdeviceloginDlg::OnMouseMove(UINT nFlags, CPoint point) {
     m_ctrlStaticLogo.GetWindowRect(&rect);
     m_ctrlStaticLogo.GetClientRect(&translatedRect);
 
-    translatedRect.left   = rect.left - rectDlg.left - 10;
-    translatedRect.top    = rect.top - rectDlg.top - 30;
-    translatedRect.right  = rect.right - rectDlg.left - 10;
+    translatedRect.left = rect.left - rectDlg.left - 10;
+    translatedRect.top = rect.top - rectDlg.top - 30;
+    translatedRect.right = rect.right - rectDlg.left - 10;
     translatedRect.bottom = rect.bottom - rectDlg.top - 30;
 
     if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
@@ -371,9 +371,9 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     this->GetWindowRect(&rectDlg);
     m_ctrlStaticLogo.GetWindowRect(&rect);
     m_ctrlStaticLogo.GetClientRect(&translatedRect);
-    translatedRect.left   = rect.left - rectDlg.left - 10;
-    translatedRect.top    = rect.top - rectDlg.top - 30;
-    translatedRect.right  = rect.right - rectDlg.left - 10;
+    translatedRect.left = rect.left - rectDlg.left - 10;
+    translatedRect.top = rect.top - rectDlg.top - 30;
+    translatedRect.right = rect.right - rectDlg.left - 10;
     translatedRect.bottom = rect.bottom - rectDlg.top - 30;
     if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
         ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {

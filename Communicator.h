@@ -54,9 +54,9 @@ struct PollResponseError {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PollResponseError, error)
 
 struct DeviceLoginResponseError {
-    bool        success;
+    bool success;
     std::string error;
-    ErrorCodes  error_code;
+    ErrorCodes error_code;
     std::string login_status;
 };
 
@@ -64,7 +64,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceLoginResponseError, success, error, err
                                    login_status)
 
 struct DeviceLoginResponseSuccess {
-    bool        success;
+    bool success;
     std::string login_status;
 };
 
@@ -88,9 +88,9 @@ using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginRes
 template <typename TInput>
 ApiResponse HttpPost(const TInput& input, const CString& host, const CString& endpoint) {
     ApiResponse output{};
-    json        j_input = input;
-    std::string body    = j_input.dump();
-    CString     jsonData(CA2T(body.c_str(), CP_UTF8));
+    json j_input = input;
+    std::string body = j_input.dump();
+    CString jsonData(CA2T(body.c_str(), CP_UTF8));
 
     // Open internet session
     HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
@@ -120,14 +120,14 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
     }
 
     // Convert jsonData (CString - UTF-16) to UTF-8
-    CW2A   utf8Json(jsonData, CP_UTF8); // convert wide string to UTF-8
-    LPCSTR utf8Body   = utf8Json;
-    int    utf8Length = (int)strlen(utf8Body);
+    CW2A utf8Json(jsonData, CP_UTF8); // convert wide string to UTF-8
+    LPCSTR utf8Body = utf8Json;
+    int utf8Length = (int)strlen(utf8Body);
 
     // Send the request with UTF-8 body
     LPCTSTR headers = _T("Content-Type: application/json\r\n");
-    BOOL    success = HttpSendRequest(hRequest, headers, -1L, (LPVOID)utf8Body,
-                                      utf8Length); // size in bytes (UTF-8)
+    BOOL success = HttpSendRequest(hRequest, headers, -1L, (LPVOID)utf8Body,
+                                   utf8Length); // size in bytes (UTF-8)
 
     if (!success) {
         AfxMessageBox(_T("HttpSendRequest failed"));
@@ -139,8 +139,8 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
 
     // Read the response
     std::string responseStr;
-    char        buffer[4096];
-    DWORD       bytesRead = 0;
+    char buffer[4096];
+    DWORD bytesRead = 0;
     while (InternetReadFile(hRequest, buffer, sizeof(buffer) - 1, &bytesRead) && bytesRead) {
         buffer[bytesRead] = '\0';
         responseStr.append(buffer, bytesRead);

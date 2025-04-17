@@ -16,8 +16,8 @@ class CAuthProgressDlg : public CDialogEx {
     afx_msg void OnDestroy();
 
   private:
-    int    m_Frame; // Current frame in animation (0 to 4)
-    bool   m_hasCancelled = false;
+    int m_Frame;
+    bool m_hasCancelled = false;
     CBrush m_brBackground;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -30,7 +30,7 @@ class CAuthProgressDlg : public CDialogEx {
     DECLARE_MESSAGE_MAP()
 
   public:
-    afx_msg void   OnBnClickedCancel();
-    bool           HasCancelled() { return m_hasCancelled; }
+    afx_msg void OnBnClickedCancel();
+    bool HasCancelled() { return m_hasCancelled; }
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

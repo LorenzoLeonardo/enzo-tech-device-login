@@ -29,8 +29,8 @@ static bool IsDefaultSession(const CString& session_id, const CString& user_id) 
 
 static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
-    CString     uuid(CA2T(uuid_s.c_str(), CP_UTF8));
-    CString     url;
+    CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
+    CString url;
     url.Format(_T("https://enzotechcomputersolutions.com/auth?login=Google&session_id=%s"),
                (LPCTSTR)uuid);
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
@@ -41,10 +41,10 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
             PollRequest{uuid_s}, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
         if (std::holds_alternative<PollResponse>(resp)) {
             PollResponse response = std::get<PollResponse>(resp);
-            CString      user(CA2T(response.user_id.c_str(), CP_UTF8));
-            CString      name(CA2T(response.name.c_str(), CP_UTF8));
-            CString      email(CA2T(response.email.c_str(), CP_UTF8));
-            CString      login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+            CString user(CA2T(response.user_id.c_str(), CP_UTF8));
+            CString name(CA2T(response.name.c_str(), CP_UTF8));
+            CString email(CA2T(response.email.c_str(), CP_UTF8));
+            CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
             WriteIniValue(_T("User"), _T("user_id"), user, path);
             WriteIniValue(_T("User"), _T("session_id"), uuid, path);
             WriteIniValue(_T("User"), _T("name"), name, path);
@@ -58,13 +58,13 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
 }
 
 static bool CheckExistingSession(const CString& session_id, const CString& path) {
-    CString user_id   = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-    CString name      = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
-    CString email     = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
+    CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
     CString device_id = GetComputerNameMFC();
-    CString username  = GetUsernameMFC();
+    CString username = GetUsernameMFC();
     CString timestamp = GetIsoTimestamp();
-    CString action    = _T("checksession");
+    CString action = _T("checksession");
 
     ApiResponse resp = HttpPost<DeviceEvent>(
         DeviceEvent{
@@ -79,7 +79,7 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
-        CString                    login_status(CA2T(response.login_status.c_str(), CP_UTF8));
+        CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
         WriteIniValue(_T("User"), _T("action"), login_status, path);
         return true;
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
@@ -108,7 +108,7 @@ CenzotechdeviceloginApp::CenzotechdeviceloginApp() {
 
 void CenzotechdeviceloginApp::ShowMainDialog() {
     CenzotechdeviceloginDlg dlg;
-    m_pMainWnd        = &dlg;
+    m_pMainWnd = &dlg;
     INT_PTR nResponse = dlg.DoModal();
     if (nResponse == IDOK) {
         // Handle OK
@@ -141,10 +141,10 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     AfxGetApp()->m_pszAppName = _tcsdup(_T("Notification"));
 
-    CString path       = GetIniFilePath(_T("user.ini"));
+    CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-    CString user_id    = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-    bool    isDefault  = IsDefaultSession(session_id, user_id);
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    bool isDefault = IsDefaultSession(session_id, user_id);
 
     if (IsDefaultSession(session_id, user_id)) {
         AfxMessageBox(_T("Session ID or User ID is not set. Please log in first."));
@@ -156,12 +156,12 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     pWaitDlg->ShowWindow(SW_SHOW);
 
     std::atomic<bool> isDone{false};
-    bool              is_success = false;
+    bool is_success = false;
 
     std::thread authThread([&]() {
         is_success = isDefault ? PerformLoginFlow(path, pWaitDlg.get())
                                : CheckExistingSession(session_id, path);
-        isDone     = true;
+        isDone = true;
     });
     authThread.detach();
 

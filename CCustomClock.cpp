@@ -5,9 +5,9 @@
 CCustomClock* pCCustomClock;
 CCustomClock::CCustomClock() {
     m_csFontStyle = _T("Microsoft Sans Serif");
-    m_nFontSize   = 12;
+    m_nFontSize = 12;
     m_nFontWeight = FW_NORMAL;
-    m_textColor   = RGB(0, 0, 0);
+    m_textColor = RGB(0, 0, 0);
     m_textBKColor = RGB(13, 71, 161);
     pCCustomClock = this;
 }
@@ -16,11 +16,11 @@ CCustomClock::~CCustomClock() {}
 void CCustomClock::CreateClock() {
     // Get DPI from screen DC
     HDC hScreenDC = ::GetDC(NULL);
-    int dpiY      = GetDeviceCaps(hScreenDC, LOGPIXELSY);
+    int dpiY = GetDeviceCaps(hScreenDC, LOGPIXELSY);
     ::ReleaseDC(NULL, hScreenDC);
 
     // Convert point size to logical font height
-    int logicalFontHeight     = -MulDiv(m_nFontSize, dpiY, 72);
+    int logicalFontHeight = -MulDiv(m_nFontSize, dpiY, 72);
     int logicalFontHeightAMPM = -MulDiv(m_nFontSize / 2, dpiY, 72);
     int logicalFontHeightDate = -MulDiv(m_nFontSize / 3, dpiY, 72);
 
@@ -76,8 +76,8 @@ void CCustomClock::DestroyClock() {
 }
 CString CCustomClock::GetDateTime() {
     SYSTEMTIME sysTime;
-    WORD       wHour = 0;
-    CString    csDateTime;
+    WORD wHour = 0;
+    CString csDateTime;
 
     GetLocalTime(&sysTime);
     wHour = sysTime.wHour;
@@ -98,8 +98,8 @@ CString CCustomClock::GetDateTime() {
 }
 void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
     // 1. Get DPI scaling
-    int    dpiX   = GetDeviceCaps(dcSrc->GetSafeHdc(), LOGPIXELSX);
-    int    dpiY   = GetDeviceCaps(dcSrc->GetSafeHdc(), LOGPIXELSY);
+    int dpiX = GetDeviceCaps(dcSrc->GetSafeHdc(), LOGPIXELSX);
+    int dpiY = GetDeviceCaps(dcSrc->GetSafeHdc(), LOGPIXELSY);
     double scaleX = dpiX / 96.0;
     double scaleY = dpiY / 96.0;
 
@@ -113,10 +113,10 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
 
     // 3. Prepare variables
     SYSTEMTIME sysTime;
-    SIZE       sizeTime = {}, sizeAMPM = {}, sizeDate = {};
+    SIZE sizeTime = {}, sizeAMPM = {}, sizeDate = {};
     TEXTMETRIC tmTime = {}, tmDate = {};
-    CString    csTime, csAMPM, csDate;
-    WORD       wHour = 0;
+    CString csTime, csAMPM, csDate;
+    WORD wHour = 0;
 
     // 4. Get current time
     GetLocalTime(&sysTime);
@@ -151,7 +151,7 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
 
     // 8. Draw Date
     dcSrc->SetTextColor(m_textColor);
-    pOldFont  = dcSrc->SelectObject(&m_cFontDate);
+    pOldFont = dcSrc->SelectObject(&m_cFontDate);
     int yDate = yScaled + tmTime.tmHeight;
     dcSrc->TextOut(xScaled, yDate, csDate);
     GetTextExtentPoint32(dcSrc->GetSafeHdc(), csDate, csDate.GetLength(), &sizeDate);
@@ -159,12 +159,12 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
     dcSrc->SelectObject(pOldFont);
 
     // 9. Update clock rect for the next redraw
-    int totalWidth  = max(sizeTime.cx + sizeAMPM.cx, sizeDate.cx);
+    int totalWidth = max(sizeTime.cx + sizeAMPM.cx, sizeDate.cx);
     int totalHeight = tmTime.tmHeight + tmDate.tmHeight;
 
-    m_rectClock.left   = xScaled;
-    m_rectClock.top    = yScaled;
-    m_rectClock.right  = xScaled + totalWidth;
+    m_rectClock.left = xScaled;
+    m_rectClock.top = yScaled;
+    m_rectClock.right = xScaled + totalWidth;
     m_rectClock.bottom = yScaled + totalHeight;
 }
 
