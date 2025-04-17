@@ -96,7 +96,11 @@ END_MESSAGE_MAP()
 
 void CenzotechdeviceloginDlg::UpdateClock() {
     CClientDC cdc(this);
-    m_customClock.DrawClock(&cdc, 420, 30);
+    CRect     rect;
+
+    GetDlgItem(IDC_MY_GROUPBOX)->GetWindowRect(&rect);
+    ScreenToClient(&rect);
+    m_customClock.DrawClock(&cdc, rect.left, rect.left);
 }
 void CenzotechdeviceloginDlg::ClockThread() {
     while (!m_bClickClose) {
