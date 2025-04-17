@@ -209,8 +209,12 @@ void CenzotechdeviceloginDlg::OnPaint() {
         if (pGroup) {
             CRect rect;
             pGroup->GetWindowRect(&rect);
-            rect.top += 10;
-            // rect.left += 10;
+
+            int    dpiY   = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSY);
+            double scaleY = dpiY / 96.0;
+            int    y      = static_cast<int>((10 * scaleY));
+
+            rect.top += y;
             ScreenToClient(&rect);
 
             dc.FillSolidRect(&rect, RGB(66, 165, 245));
