@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "enzo-tech-device-login", "enzo-tech-device-login.vcxproj", "{7E0061BF-21D2-3F26-BB30-D622976C75D6}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Timekeeping Badger", "Timekeeping Badger\Timekeeping Badger.vdproj", "{FC75F339-651A-E015-2C5A-F9C056E003B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7E0061BF-21D2-3F26-BB30-D622976C75D6} = {7E0061BF-21D2-3F26-BB30-D622976C75D6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
