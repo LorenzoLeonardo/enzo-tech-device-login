@@ -135,7 +135,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     CWinApp::InitInstance();
     AfxEnableControlContainer();
 
-    CShellManager* pShellManager = new CShellManager;
+    std::unique_ptr<CShellManager> pShellManager(new CShellManager);
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
@@ -144,27 +144,25 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     CString path       = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id    = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-
-    bool is_success = false;
-    bool isDone     = false;
-    bool isDefault  = false;
+    bool    isDefault  = IsDefaultSession(session_id, user_id);
 
     if (IsDefaultSession(session_id, user_id)) {
-        isDefault = true;
         AfxMessageBox(_T("Session ID or User ID is not set. Please log in first."));
     }
-    CAuthProgressDlg* pWaitDlg = new CAuthProgressDlg();
+
+    auto pWaitDlg = std::make_unique<CAuthProgressDlg>();
+
     pWaitDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pWaitDlg->ShowWindow(SW_SHOW);
-    std::thread authThread(
-        [&isDone, &is_success, user_id, path, session_id, isDefault, pWaitDlg]() {
-            if (isDefault) {
-                is_success = PerformLoginFlow(path, pWaitDlg);
-            } else {
-                is_success = CheckExistingSession(session_id, path);
-            }
-            isDone = true;
-        });
+
+    std::atomic<bool> isDone{false};
+    bool              is_success = false;
+
+    std::thread authThread([&]() {
+        is_success = isDefault ? PerformLoginFlow(path, pWaitDlg.get())
+                               : CheckExistingSession(session_id, path);
+        isDone     = true;
+    });
     authThread.detach();
 
     // Pump messages while waiting
@@ -180,15 +178,11 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     // Done — close the dialog
     if (pWaitDlg && ::IsWindow(pWaitDlg->GetSafeHwnd())) {
         pWaitDlg->DestroyWindow();
-        delete pWaitDlg;
     }
 
     if (is_success) {
         ShowMainDialog();
     }
-
-    if (pShellManager != nullptr)
-        delete pShellManager;
 
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
     ControlBarCleanUp();
