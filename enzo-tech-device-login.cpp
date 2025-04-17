@@ -127,6 +127,12 @@ CenzotechdeviceloginApp theApp;
 // CenzotechdeviceloginApp initialization
 BOOL CenzotechdeviceloginApp::InitInstance()
 {
+    HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
+
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        AfxMessageBox(_T("Another instance of the application is already running."));
+        return FALSE; // Exit the application
+    }
     INITCOMMONCONTROLSEX InitCtrls = { sizeof(InitCtrls), ICC_WIN95_CLASSES };
     InitCommonControlsEx(&InitCtrls);
     CWinApp::InitInstance();
