@@ -71,12 +71,16 @@ CString GetIsoTimestamp() {
 }
 
 std::string GetLastErrorString(DWORD errorCode = GetLastError()) {
+    HMODULE hModule = LoadLibraryEx(_T("wininet.dll"), nullptr, LOAD_LIBRARY_AS_DATAFILE);
+    if (!hModule)
+        return "Failed to load wininet.dll";
+
     LPWSTR lpMsgBuf = nullptr;
 
-    FormatMessageW(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0,
-        nullptr);
+    FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_HMODULE |
+                       FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   hModule, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf,
+                   0, nullptr);
 
     std::string result;
     if (lpMsgBuf) {
