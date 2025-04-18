@@ -406,33 +406,23 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
 }
 
 void CenzotechdeviceloginDlg::OnMouseMove(UINT nFlags, CPoint point) {
-    RECT rect, rectDlg, translatedRect;
-    this->GetWindowRect(&rectDlg);
-    m_ctrlStaticLogo.GetWindowRect(&rect);
-    m_ctrlStaticLogo.GetClientRect(&translatedRect);
+    CRect rect;
+    m_ctrlStaticLogo.GetWindowRect(&rect); // Get screen coordinates
+    ScreenToClient(&rect);                 // Convert to client coordinates
 
-    translatedRect.left = rect.left - rectDlg.left - 10;
-    translatedRect.top = rect.top - rectDlg.top - 30;
-    translatedRect.right = rect.right - rectDlg.left - 10;
-    translatedRect.bottom = rect.bottom - rectDlg.top - 30;
-
-    if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
-        ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {
+    if (rect.PtInRect(point)) {
         SetCursor(LoadCursor(NULL, IDC_HAND));
     }
+
+    CDialogEx::OnMouseMove(nFlags, point); // Call base class handler
 }
 
 void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
-    RECT rect, rectDlg, translatedRect;
-    this->GetWindowRect(&rectDlg);
-    m_ctrlStaticLogo.GetWindowRect(&rect);
-    m_ctrlStaticLogo.GetClientRect(&translatedRect);
-    translatedRect.left = rect.left - rectDlg.left - 10;
-    translatedRect.top = rect.top - rectDlg.top - 30;
-    translatedRect.right = rect.right - rectDlg.left - 10;
-    translatedRect.bottom = rect.bottom - rectDlg.top - 30;
-    if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
-        ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {
+    CRect rect;
+    m_ctrlStaticLogo.GetWindowRect(&rect); // Get screen coordinates
+    ScreenToClient(&rect);                 // Convert to client coordinates
+
+    if (rect.PtInRect(point)) {
         ShellExecute(NULL, _T("open"),
                      Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"), NULL,
                      NULL, SW_SHOWNORMAL);
