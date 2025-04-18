@@ -291,16 +291,20 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
 
-        AfxMessageBox(_T("Login successful"), MB_OK | MB_ICONINFORMATION);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"), _T("Information"),
+                     MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
             WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
             WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-            AfxMessageBox(_T("Session has expired. Please run the program again."),
-                          MB_OK | MB_ICONERROR);
+
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                         _T("Session has expired. Please run the program again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         } else {
-            AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
     }
@@ -335,16 +339,20 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
 
-        AfxMessageBox(_T("Logout successful"), MB_OK | MB_ICONINFORMATION);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"), _T("Information"),
+                     MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
             WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
             WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-            AfxMessageBox(_T("Session has expired. Please run the program again."),
-                          MB_OK | MB_ICONERROR);
+
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                         _T("Session has expired. Please run the program again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         } else {
-            AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
     }

@@ -32,8 +32,8 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
-    url.Format(_T("%s/auth?login=Google&session_id=%s"),
-               Settings::GetInstance().Url(), uuid.GetString());
+    url.Format(_T("%s/auth?login=Google&session_id=%s"), Settings::GetInstance().Url(),
+               uuid.GetString());
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
 
     int attempts = 0;
@@ -88,10 +88,12 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
         if (response.error_code == ErrorCodes::invalid_grant) {
             WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
             WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-            AfxMessageBox(_T("Session has expired. Please run the program again."),
-                          MB_OK | MB_ICONERROR);
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                         _T("Session has expired. Please run the program again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         } else {
-            AfxMessageBox(_T("Server Error. Please try again."), MB_OK | MB_ICONERROR);
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
         }
     }
 
@@ -128,7 +130,9 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
 
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        AfxMessageBox(_T("Another instance of the application is already running."));
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                     _T("Another instance of the application is already running."),
+                     _T("Information"), MB_OK | MB_ICONERROR);
         return FALSE; // Exit the application
     }
     INITCOMMONCONTROLSEX InitCtrls = {sizeof(InitCtrls), ICC_WIN95_CLASSES};
@@ -148,7 +152,9 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     bool isDefault = IsDefaultSession(session_id, user_id);
 
     if (IsDefaultSession(session_id, user_id)) {
-        AfxMessageBox(_T("Session ID or User ID is not set. Please log in first."));
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                     _T("Session ID or User ID is not set. Please log in first."),
+                     _T("Information"), MB_OK | MB_ICONINFORMATION);
     }
 
     auto pWaitDlg = std::make_unique<CAuthProgressDlg>();
