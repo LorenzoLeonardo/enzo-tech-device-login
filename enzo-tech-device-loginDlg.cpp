@@ -318,6 +318,15 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                          _T("Information"), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
+    } else if (std::holds_alternative<HttpError>(resp)) {
+        HttpError response = std::get<HttpError>(resp);
+
+        CString error(response.http_error.c_str());
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                     MB_OK | MB_ICONERROR);
+    } else {
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
+                     MB_OK | MB_ICONERROR);
     }
 }
 
@@ -377,6 +386,15 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                          _T("Information"), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
+    } else if (std::holds_alternative<HttpError>(resp)) {
+        HttpError response = std::get<HttpError>(resp);
+
+        CString error(response.http_error.c_str());
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                     MB_OK | MB_ICONERROR);
+    } else {
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
+                     MB_OK | MB_ICONERROR);
     }
 }
 

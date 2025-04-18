@@ -32,7 +32,7 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
-    url.Format(_T("%s/auth?login=Google&session_id=%s"), Settings::GetInstance().Url(),
+    url.Format(_T("%s/auth?login=Google&session_id=%s"), Settings::GetInstance().Url().GetString(),
                uuid.GetString());
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
 
@@ -57,6 +57,13 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
                 return false;
             }
             return true;
+        } else if (std::holds_alternative<PollResponseError>(resp)) {
+            PollResponseError response = std::get<PollResponseError>(resp);
+            CString error;
+            error.Format(_T("Server error: %d"), response.error);
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                         MB_OK | MB_ICONERROR);
+            return false;
         }
         Sleep(5000);
     }
@@ -112,6 +119,15 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
                          _T("Information"), MB_OK | MB_ICONERROR);
         }
+    } else if (std::holds_alternative<HttpError>(resp)) {
+        HttpError response = std::get<HttpError>(resp);
+
+        CString error(response.http_error.c_str());
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                     MB_OK | MB_ICONERROR);
+    } else {
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
+                     MB_OK | MB_ICONERROR);
     }
 
     return false;
