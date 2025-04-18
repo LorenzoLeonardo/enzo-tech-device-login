@@ -38,8 +38,9 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
 
     int attempts = 0;
     while (!pWaitDlg->HasCancelled()) {
-        ApiResponse resp = HttpPost<PollRequest>(
-            PollRequest{uuid_s}, _T("enzotechcomputersolutions.com"), _T("/poll_login"));
+        ApiResponse resp =
+            HttpPost<PollRequest>(PollRequest{uuid_s}, _T("enzotechcomputersolutions.com"),
+                                  _T("/applications/poll_login"));
         if (std::holds_alternative<PollResponse>(resp)) {
             PollResponse response = std::get<PollResponse>(resp);
             CString user(CA2T(response.user_id.c_str(), CP_UTF8));
@@ -88,7 +89,7 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
             std::string(CW2A(action.GetString(), CP_UTF8)),
             std::string(CW2A(device_id.GetString(), CP_UTF8)),
         },
-        Settings::GetInstance().HostName(), _T("/device_login"));
+        Settings::GetInstance().HostName(), _T("/applications/device_login"));
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
