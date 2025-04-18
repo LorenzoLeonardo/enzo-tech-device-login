@@ -4,6 +4,7 @@
 
 #pragma once
 #include "CCustomClock.h"
+#include "CScalableBitmapStatic.h"
 #include <atomic>
 #include <thread>
 
@@ -29,6 +30,7 @@ class CenzotechdeviceloginDlg : public CDialogEx {
 
     CButton m_myGroupBox;
     CCustomClock m_customClock;
+    CScalableBitmapStatic m_ctrlStaticLogo;
 
     // Generated message map functions
     virtual BOOL OnInitDialog();
@@ -43,7 +45,6 @@ class CenzotechdeviceloginDlg : public CDialogEx {
     afx_msg void OnBnClickedButtonLogout();
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
-    CStatic m_ctrlStaticLogo;
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 

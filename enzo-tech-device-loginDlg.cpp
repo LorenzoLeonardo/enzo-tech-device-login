@@ -79,7 +79,7 @@ void CenzotechdeviceloginDlg::DoDataExchange(CDataExchange* pDX) {
     DDX_Control(pDX, IDC_BUTTON_LOGIN, m_ctrlBtnLogin);
     DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_ctrlBtnLogout);
     DDX_Control(pDX, IDC_MY_GROUPBOX, m_myGroupBox);
-    DDX_Control(pDX, IDC_STATIC_PICTURE, m_ctrlStaticLogo);
+    DDX_Control(pDX, IDC_STATIC_PICTURE, m_ctrlStaticLogo); // associate your static control
 }
 
 BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
@@ -172,6 +172,7 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
     }
+    m_ctrlStaticLogo.SetBitmapResource(IDB_BITMAP1);
     m_clockThread = std::thread(&CenzotechdeviceloginDlg::ClockThread, this);
     return TRUE; // return TRUE  unless you set the focus to a control
 }
@@ -432,8 +433,9 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     translatedRect.bottom = rect.bottom - rectDlg.top - 30;
     if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
         ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {
-        ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"),
-                     NULL, NULL, SW_SHOWNORMAL);
+        ShellExecute(NULL, _T("open"),
+                     Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"), NULL,
+                     NULL, SW_SHOWNORMAL);
     }
     CDialogEx::OnLButtonDown(nFlags, point);
 }

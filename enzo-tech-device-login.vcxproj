@@ -190,6 +190,7 @@
     <ClInclude Include="CAuthProgressDlg.h" />
     <ClInclude Include="CCustomClock.h" />
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="CScalableBitmapStatic.h" />
     <ClInclude Include="enzo-tech-device-login.h" />
     <ClInclude Include="enzo-tech-device-loginDlg.h" />
     <ClInclude Include="framework.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="CAuthProgressDlg.cpp" />
     <ClCompile Include="CCustomClock.cpp" />
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="CScalableBitmapStatic.cpp" />
     <ClCompile Include="enzo-tech-device-login.cpp" />
     <ClCompile Include="enzo-tech-device-loginDlg.cpp" />
     <ClCompile Include="pch.cpp">
