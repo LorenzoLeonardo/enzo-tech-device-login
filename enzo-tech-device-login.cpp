@@ -60,11 +60,13 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
             return true;
         } else if (std::holds_alternative<PollResponseError>(resp)) {
             PollResponseError response = std::get<PollResponseError>(resp);
-            CString error;
-            error.Format(_T("Server error: %d"), response.error);
-            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
-                         MB_OK | MB_ICONERROR);
-            return false;
+            if (response.error != ErrorCodes::authorization_pending) {
+                CString error;
+                error.Format(_T("Server error: %d"), response.error);
+                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                             MB_OK | MB_ICONERROR);
+                return false;
+            }
         }
         Sleep(5000);
     }
