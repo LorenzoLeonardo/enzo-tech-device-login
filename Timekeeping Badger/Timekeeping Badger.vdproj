@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_61E07B35BD374B64A907DC594F0FDB5E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E51F069E5BD0483E883B972E497CA21A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -132,6 +138,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61E07B35BD374B64A907DC594F0FDB5E"
+            {
+            "SourcePath" = "8:..\\settings.ini"
+            "TargetName" = "8:settings.ini"
+            "Tag" = "8:"
+            "Folder" = "8:_1610D62381BE4001874F4A93E6766941"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E51F069E5BD0483E883B972E497CA21A"
             {
             "SourcePath" = "8:..\\x64\\Release\\enzo-tech-device-login.exe"
@@ -162,7 +188,7 @@
             {
             "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:TARGETDIR"
@@ -209,7 +235,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Timekeeping Badger"
         "ProductCode" = "8:{6A9F7094-931A-4861-BBAC-B4662AE48077}"
-        "PackageCode" = "8:{08FEB938-FBFC-482E-8347-E8AB2B858273}"
+        "PackageCode" = "8:{5AB1B27F-0E6D-4F44-9F38-8C5DCFF13D50}"
         "UpgradeCode" = "8:{681D3F7B-AEB9-444C-AC21-B3D637BEDCAB}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
