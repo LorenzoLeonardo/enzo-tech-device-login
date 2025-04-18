@@ -136,6 +136,36 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
     return false;
 }
 
+static bool GetServerVersion(const CString& path) {
+    ApiResponse resp =
+        HttpGet<CString>(_T(""), Settings::GetInstance().HostName(), _T("/server_info"));
+
+    if (std::holds_alternative<PackageName>(resp)) {
+        PackageName response = std::get<PackageName>(resp);
+        CString Name(CA2T(response.Name.c_str(), CP_UTF8));
+        CString Version(CA2T(response.Version.c_str(), CP_UTF8));
+        BOOL success = WritePrivateProfileString(_T("User"), _T("Servername"), Name, path) &&
+                       WritePrivateProfileString(_T("User"), _T("Serverversion"), Version, path);
+        if (!success) {
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
+            return false;
+        }
+        return true;
+    } else if (std::holds_alternative<HttpError>(resp)) {
+        HttpError response = std::get<HttpError>(resp);
+
+        CString error(response.http_error.c_str());
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                     MB_OK | MB_ICONERROR);
+    } else {
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
+                     MB_OK | MB_ICONERROR);
+    }
+
+    return false;
+}
+
 // CenzotechdeviceloginApp construction
 CenzotechdeviceloginApp::CenzotechdeviceloginApp() {
     // support Restart Manager
@@ -202,8 +232,9 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     bool is_success = false;
 
     std::thread authThread([&]() {
-        is_success = isDefault ? PerformLoginFlow(path, pWaitDlg.get())
-                               : CheckExistingSession(session_id, path);
+        is_success = (isDefault ? PerformLoginFlow(path, pWaitDlg.get())
+                                : CheckExistingSession(session_id, path)) &&
+                     GetServerVersion(path);
         isDone = true;
     });
     authThread.detach();

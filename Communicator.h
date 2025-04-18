@@ -106,7 +106,6 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
     json j_input = input;
     std::string body = j_input.dump();
     CString jsonData(CA2T(body.c_str(), CP_UTF8));
-
     // Open internet session
     HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
@@ -201,7 +200,7 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
 }
 
 template <typename TInput>
-ApiResponse HttpGet(const CString& host, const CString& endpoint) {
+ApiResponse HttpGet(const TInput& input, const CString& host, const CString& endpoint) {
     ApiResponse output{};
 
     // Open internet session
