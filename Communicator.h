@@ -90,8 +90,15 @@ struct HttpError {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(HttpError, status_code, http_error)
 
+struct PackageName {
+    std::string Name;
+    std::string Version;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PackageName, Name, Version)
+
 using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponseError,
-                                 DeviceLoginResponseSuccess, HttpError>;
+                                 DeviceLoginResponseSuccess, PackageName, HttpError>;
 
 template <typename TInput>
 ApiResponse HttpPost(const TInput& input, const CString& host, const CString& endpoint) {
@@ -150,7 +157,7 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
 
     // Read the response
     std::string responseStr;
-    char buffer[4096];
+    char buffer[4096] = {};
     DWORD bytesRead = 0;
     while (InternetReadFile(hRequest, buffer, sizeof(buffer) - 1, &bytesRead) && bytesRead) {
         buffer[bytesRead] = '\0';
@@ -176,13 +183,96 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
         } else {
             // Handle unexpected response
             DWORD error = GetLastError();
-            return HttpError{error, "Invalid JSON from server."};
+            output = HttpError{error, "Invalid JSON from server."};
         }
     } catch (const json::exception& e) {
         std::string errorMessage = std::format("JSON parsing failed: {}!", e.what());
 
         DWORD error = GetLastError();
-        return HttpError{error, errorMessage};
+        output = HttpError{error, errorMessage};
+    }
+
+    // Clean up
+    InternetCloseHandle(hRequest);
+    InternetCloseHandle(hConnect);
+    InternetCloseHandle(hInternet);
+
+    return output;
+}
+
+template <typename TInput>
+ApiResponse HttpGet(const CString& host, const CString& endpoint) {
+    ApiResponse output{};
+
+    // Open internet session
+    HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+    if (!hInternet) {
+        DWORD error = GetLastError();
+        return HttpError{error, GetLastErrorString(error)};
+    }
+
+    // Connect to host
+    HINTERNET hConnect = InternetConnect(hInternet, host, INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL,
+                                         INTERNET_SERVICE_HTTP, 0, 0);
+    if (!hConnect) {
+        DWORD error = GetLastError();
+
+        InternetCloseHandle(hInternet);
+        return HttpError{error, GetLastErrorString(error)};
+    }
+
+    // Open HTTP GET request
+    HINTERNET hRequest = HttpOpenRequest(
+        hConnect, _T("GET"), endpoint, NULL, NULL, NULL,
+        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
+    if (!hRequest) {
+        DWORD error = GetLastError();
+
+        InternetCloseHandle(hConnect);
+        InternetCloseHandle(hInternet);
+        return HttpError{error, GetLastErrorString(error)};
+    }
+
+    // Send the GET request (no body)
+    BOOL success = HttpSendRequest(hRequest, NULL, 0, NULL, 0); // No headers or body
+
+    if (!success) {
+        DWORD error = GetLastError();
+
+        InternetCloseHandle(hRequest);
+        InternetCloseHandle(hConnect);
+        InternetCloseHandle(hInternet);
+        return HttpError{error, GetLastErrorString(error)};
+    }
+
+    // Read the response
+    std::string responseStr;
+    char buffer[4096] = {};
+    DWORD bytesRead = 0;
+    while (InternetReadFile(hRequest, buffer, sizeof(buffer) - 1, &bytesRead) && bytesRead) {
+        buffer[bytesRead] = '\0';
+        responseStr.append(buffer, bytesRead);
+    }
+
+    // Parse JSON response
+    try {
+        json j = json::parse(responseStr);
+
+        if (j.contains("PackageName")) {
+            json packageJson = j["PackageName"];
+            PackageName pkg = packageJson.get<PackageName>();
+
+            output = pkg;
+        } else {
+            DWORD error = GetLastError();
+            output = HttpError{error, "PackageName not found"};
+        }
+
+    } catch (const json::exception& e) {
+        std::string errorMessage = std::format("JSON parsing failed: {}!", e.what());
+
+        DWORD error = GetLastError();
+        output = HttpError{error, errorMessage};
     }
 
     // Clean up
