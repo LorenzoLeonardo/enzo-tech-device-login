@@ -14,7 +14,6 @@
 #include <atlconv.h>
 #include <thread>
 
-
 #ifdef _DEBUG
 #    define new DEBUG_NEW
 #endif
@@ -52,7 +51,11 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
                            WritePrivateProfileString(_T("User"), _T("name"), name, path) &&
                            WritePrivateProfileString(_T("User"), _T("email"), email, path) &&
                            WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
-
+            if (!success) {
+                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                             _T("Information"), MB_OK | MB_ICONERROR);
+                return false;
+            }
             return true;
         }
         Sleep(5000);
@@ -83,13 +86,25 @@ static bool CheckExistingSession(const CString& session_id, const CString& path)
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
-        WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
+        BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
+        if (!success) {
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                         _T("Information"), MB_OK | MB_ICONERROR);
+            return false;
+        }
         return true;
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
-            WritePrivateProfileString(_T("User"), _T("user_id"), _T("default_user_id"), path);
-            WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"), path);
+            BOOL success =
+                WritePrivateProfileString(_T("User"), _T("user_id"), _T("default_user_id"), path) &&
+                WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"),
+                                          path);
+            if (!success) {
+                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                             _T("Information"), MB_OK | MB_ICONERROR);
+                return false;
+            }
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                          _T("Session has expired. Please run the program again."),
                          _T("Information"), MB_OK | MB_ICONERROR);
