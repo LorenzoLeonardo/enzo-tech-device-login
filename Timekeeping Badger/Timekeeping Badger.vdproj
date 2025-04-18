@@ -95,6 +95,11 @@
                     "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.7.2"
                     }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x64"
+                    {
+                    "Name" = "8:Visual C++ \"14\" Runtime Libraries (x64)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.14.0.x64"
+                    }
                 }
             }
         }
@@ -233,20 +238,20 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Timekeeping Badger"
-        "ProductCode" = "8:{6A9F7094-931A-4861-BBAC-B4662AE48077}"
-        "PackageCode" = "8:{5AB1B27F-0E6D-4F44-9F38-8C5DCFF13D50}"
+        "ProductName" = "8:Enzo Tech Timekeeping Badger"
+        "ProductCode" = "8:{14EDEE27-54BB-420D-AE4D-35A930C0EE18}"
+        "PackageCode" = "8:{BC2B473A-226F-40DD-B363-4066EA3E07D7}"
         "UpgradeCode" = "8:{681D3F7B-AEB9-444C-AC21-B3D637BEDCAB}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Enzo Tech Computer Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Timekeeping Badger"
+        "Title" = "8:Enzo Tech Timekeeping Badger"
         "Subject" = "8:"
         "ARPCONTACT" = "8:enzotechcomputersolutions@outlook.com"
         "Keywords" = "8:"
