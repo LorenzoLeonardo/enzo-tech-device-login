@@ -195,6 +195,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Uuid.h" />
@@ -220,6 +221,7 @@
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include="res\enzotechdevicelogin.rc2" />
+    <None Include="settings.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\android-icon-72x72.bmp" />

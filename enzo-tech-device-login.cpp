@@ -5,6 +5,7 @@
 
 #include "CAuthProgressDlg.h"
 #include "Communicator.h"
+#include "Settings.h"
 #include "Uuid.h"
 #include "enzo-tech-device-login.h"
 #include "enzo-tech-device-loginDlg.h"
@@ -31,8 +32,8 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
-    url.Format(_T("https://enzotechcomputersolutions.com/auth?login=Google&session_id=%s"),
-               (LPCTSTR)uuid);
+    url.Format(_T("%s/auth?login=Google&session_id=%s"),
+               Settings::GetInstance().Url(), uuid.GetString());
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
 
     int attempts = 0;

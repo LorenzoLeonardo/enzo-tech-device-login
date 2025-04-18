@@ -4,9 +4,9 @@
 #include "pch.h"
 
 #include "CAuthProgressDlg.h"
+#include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
-
 // CAuthProgressDlg dialog
 
 IMPLEMENT_DYNAMIC(CAuthProgressDlg, CDialogEx)
@@ -68,6 +68,7 @@ void CAuthProgressDlg::OnPaint() {
         dc.Ellipse(x - r, y - r, x + r, y + r);
 
         dc.SelectObject(pOldBrush);
+        this->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
     }
 }
 

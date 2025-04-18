@@ -3,6 +3,7 @@
 //
 #include "pch.h"
 
+#include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
 #include "enzo-tech-device-loginDlg.h"
@@ -281,7 +282,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
             std::string(CW2A(action.GetString(), CP_UTF8)),
             std::string(CW2A(device_id.GetString(), CP_UTF8)),
         },
-        _T("enzotechcomputersolutions.com"), _T("/device_login"));
+        Settings::GetInstance().HostName(), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
@@ -325,7 +326,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
             std::string(CW2A(action.GetString(), CP_UTF8)),
             std::string(CW2A(device_id.GetString(), CP_UTF8)),
         },
-        _T("enzotechcomputersolutions.com"), _T("/device_login"));
+        Settings::GetInstance().HostName(), _T("/device_login"));
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
@@ -377,9 +378,8 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     translatedRect.bottom = rect.bottom - rectDlg.top - 30;
     if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
         ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {
-        ShellExecute(NULL, _T("open"),
-                     _T("https://enzotechcomputersolutions.com/timekeeping?page=1"), NULL, NULL,
-                     SW_SHOWNORMAL);
+        ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/timekeeping?page=1"),
+                     NULL, NULL, SW_SHOWNORMAL);
     }
     CDialogEx::OnLButtonDown(nFlags, point);
 }

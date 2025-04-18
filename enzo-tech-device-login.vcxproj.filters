@@ -48,6 +48,9 @@
     <ClInclude Include="CAuthProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="enzo-tech-device-login.cpp">
@@ -85,6 +88,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include=".clang-format" />
+    <None Include="settings.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\enzo-tech-device-login.ico">

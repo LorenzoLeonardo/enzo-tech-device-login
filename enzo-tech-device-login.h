@@ -18,7 +18,7 @@ class CenzotechdeviceloginApp : public CWinApp {
   public:
     CenzotechdeviceloginApp();
     void ShowMainDialog();
-    // Overrides
+
   public:
     virtual BOOL InitInstance();
 
