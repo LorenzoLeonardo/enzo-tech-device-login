@@ -287,7 +287,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
 
-        WriteIniValue(_T("User"), _T("action"), login_status, path);
+        WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
 
@@ -296,8 +296,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
-            WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-            WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+            WritePrivateProfileString(_T("User"), _T("user_id"), _T("default_user_id"), path);
+            WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"), path);
 
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                          _T("Session has expired. Please run the program again."),
@@ -335,7 +335,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
 
-        WriteIniValue(_T("User"), _T("action"), login_status, path);
+        WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
 
@@ -344,8 +344,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
-            WriteIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-            WriteIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+            WritePrivateProfileString(_T("User"), _T("user_id"), _T("default_user_id"), path);
+            WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"), path);
 
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                          _T("Session has expired. Please run the program again."),
