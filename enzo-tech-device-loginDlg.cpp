@@ -432,7 +432,7 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     translatedRect.bottom = rect.bottom - rectDlg.top - 30;
     if ((translatedRect.left <= (point.x)) && ((point.x) <= translatedRect.right) &&
         ((translatedRect.top) <= point.y) && (point.y <= (translatedRect.bottom))) {
-        ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/timekeeping?page=1"),
+        ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"),
                      NULL, NULL, SW_SHOWNORMAL);
     }
     CDialogEx::OnLButtonDown(nFlags, point);

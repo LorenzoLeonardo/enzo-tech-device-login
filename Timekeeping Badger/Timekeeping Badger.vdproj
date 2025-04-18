@@ -240,7 +240,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Enzo Tech Timekeeping Badger"
         "ProductCode" = "8:{14EDEE27-54BB-420D-AE4D-35A930C0EE18}"
-        "PackageCode" = "8:{BC2B473A-226F-40DD-B363-4066EA3E07D7}"
+        "PackageCode" = "8:{80945CAE-0DE9-457E-8A0A-FA50A5DCD4BC}"
         "UpgradeCode" = "8:{681D3F7B-AEB9-444C-AC21-B3D637BEDCAB}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
@@ -360,9 +360,9 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D3F7C53C44A14A27A9B17A7D1F920FF2"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_642E9D3169224B5CBCFEF0C69269C338"
             {
-            "Name" = "8:Timekeeping Badger"
+            "Name" = "8:Enzo Tech Timekeeping Badger.exe"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
