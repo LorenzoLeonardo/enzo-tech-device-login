@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "utils.h"
+#include <string>
 
 CString GetComputerNameMFC() {
     TCHAR nameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -67,4 +68,24 @@ CString GetIsoTimestamp() {
                hoursOffset, minutesOffset);
 
     return iso;
+}
+
+std::string GetLastErrorString(DWORD errorCode = GetLastError()) {
+    LPWSTR lpMsgBuf = nullptr;
+
+    FormatMessageW(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0,
+        nullptr);
+
+    std::string result;
+    if (lpMsgBuf) {
+        CW2A ansiStr(lpMsgBuf); // Convert wide string to ANSI using ATL
+        result = ansiStr;
+        LocalFree(lpMsgBuf);
+    } else {
+        result = "Unknown error";
+    }
+
+    return result;
 }

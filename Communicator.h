@@ -1,5 +1,6 @@
 #pragma once
 #include "json.hpp"
+#include "utils.h"
 #include <atlconv.h>
 #include <optional>
 #include <string>
@@ -82,8 +83,15 @@ struct DeviceEvent {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeviceEvent, session_id, user_id, username, timestamp, action,
                                    device_id)
 
+struct HttpError {
+    DWORD status_code;
+    std::string http_error;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(HttpError, status_code, http_error)
+
 using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponseError,
-                                 DeviceLoginResponseSuccess>;
+                                 DeviceLoginResponseSuccess, HttpError>;
 
 template <typename TInput>
 ApiResponse HttpPost(const TInput& input, const CString& host, const CString& endpoint) {
@@ -95,17 +103,18 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
     // Open internet session
     HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
-        AfxMessageBox(_T("InternetOpen failed"));
-        return output;
+        DWORD error = GetLastError();
+        return HttpError{error, GetLastErrorString(error)};
     }
 
     // Connect to host
     HINTERNET hConnect = InternetConnect(hInternet, host, INTERNET_DEFAULT_HTTPS_PORT, NULL, NULL,
                                          INTERNET_SERVICE_HTTP, 0, 0);
     if (!hConnect) {
-        AfxMessageBox(_T("InternetConnect failed"));
+        DWORD error = GetLastError();
+
         InternetCloseHandle(hInternet);
-        return output;
+        return HttpError{error, GetLastErrorString(error)};
     }
 
     // Open HTTP request
@@ -113,10 +122,11 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
         hConnect, _T("POST"), endpoint, NULL, NULL, NULL,
         INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
     if (!hRequest) {
-        AfxMessageBox(_T("HttpOpenRequest failed"));
+        DWORD error = GetLastError();
+
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return output;
+        return HttpError{error, GetLastErrorString(error)};
     }
 
     // Convert jsonData (CString - UTF-16) to UTF-8
@@ -130,11 +140,12 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
                                    utf8Length); // size in bytes (UTF-8)
 
     if (!success) {
-        AfxMessageBox(_T("HttpSendRequest failed"));
+        DWORD error = GetLastError();
+
         InternetCloseHandle(hRequest);
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return output;
+        return HttpError{error, GetLastErrorString(error)};
     }
 
     // Read the response
@@ -164,12 +175,14 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
             output = j.get<PollResponse>();
         } else {
             // Handle unexpected response
-            AfxMessageBox(_T("Unexpected response format"));
+            DWORD error = GetLastError();
+            return HttpError{error, "Invalid JSON from server."};
         }
     } catch (const json::exception& e) {
-        CString errorMessage;
-        errorMessage.Format(_T("JSON parsing failed: %S"), e.what());
-        AfxMessageBox(errorMessage, MB_OK | MB_ICONERROR);
+        std::string errorMessage = std::format("JSON parsing failed: {}!", e.what());
+
+        DWORD error = GetLastError();
+        return HttpError{error, errorMessage};
     }
 
     // Clean up
