@@ -4,7 +4,7 @@
 #include "pch.h"
 
 #include "AsyncTaskWithDialog.h"
-#include "CAuthProgressDlg.h"
+#include "CTaskProgressDlg.h"
 #include "Communicator.h"
 #include "MessageBoxCustomizer.h"
 #include "Settings.h"
@@ -30,7 +30,7 @@ static bool IsDefaultSession(const CString& session_id, const CString& user_id) 
     return (session_id == _T("default_session_id") || user_id == _T("default_user_id"));
 }
 
-static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
+static bool PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
@@ -238,12 +238,12 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
                      _T("Information"), MB_OK | MB_ICONINFORMATION);
     }
 
-    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
 
     bool is_success =
-        CAsyncTaskWithDialog<CAuthProgressDlg, bool>(pAuthDlg.get(), [&](CAuthProgressDlg* dlg) {
+        CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
             return (isDefault ? PerformLoginFlow(path, dlg)
                               : CheckExistingSession(session_id, path)) &&
                    GetServerVersion(path);

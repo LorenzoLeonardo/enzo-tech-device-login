@@ -188,7 +188,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AsyncTaskWithDialog.h" />
-    <ClInclude Include="CAuthProgressDlg.h" />
+    <ClInclude Include="CTaskProgressDlg.h" />
     <ClInclude Include="CCustomClock.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="CScalableBitmapStatic.h" />
@@ -204,7 +204,7 @@
     <ClInclude Include="Uuid.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CAuthProgressDlg.cpp" />
+    <ClCompile Include="CTaskProgressDlg.cpp" />
     <ClCompile Include="CCustomClock.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="CScalableBitmapStatic.cpp" />

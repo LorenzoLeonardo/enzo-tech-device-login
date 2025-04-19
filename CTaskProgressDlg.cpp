@@ -1,42 +1,42 @@
-// CAuthProgressDlg.cpp : implementation file
+// CTaskProgressDlg.cpp : implementation file
 //
 
 #include "pch.h"
 
-#include "CAuthProgressDlg.h"
+#include "CTaskProgressDlg.h"
 #include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
-// CAuthProgressDlg dialog
+// CTaskProgressDlg dialog
 #include <gdiplus.h>
 using namespace Gdiplus;
 
 #pragma comment(lib, "gdiplus.lib")
 
-IMPLEMENT_DYNAMIC(CAuthProgressDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CTaskProgressDlg, CDialogEx)
 
-CAuthProgressDlg::CAuthProgressDlg(CWnd* pParent /*=nullptr*/)
+CTaskProgressDlg::CTaskProgressDlg(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_AUTH_PROGRESS, pParent), m_Frame(0) {
     m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
     m_dotBrush.CreateSolidBrush(RGB(255, 255, 255));
 }
 
-CAuthProgressDlg::~CAuthProgressDlg() {}
+CTaskProgressDlg::~CTaskProgressDlg() {}
 
-void CAuthProgressDlg::DoDataExchange(CDataExchange* pDX) {
+void CTaskProgressDlg::DoDataExchange(CDataExchange* pDX) {
     CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAuthProgressDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CTaskProgressDlg, CDialogEx)
 ON_WM_PAINT()
 ON_WM_TIMER()
-ON_BN_CLICKED(IDCANCEL, &CAuthProgressDlg::OnBnClickedCancel)
+ON_BN_CLICKED(IDCANCEL, &CTaskProgressDlg::OnBnClickedCancel)
 ON_WM_DESTROY()
 ON_WM_CTLCOLOR()
 ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
-BOOL CAuthProgressDlg::OnInitDialog() {
+BOOL CTaskProgressDlg::OnInitDialog() {
     CDialogEx::OnInitDialog();
 
     CenterWindow(AfxGetMainWnd());
@@ -53,7 +53,7 @@ BOOL CAuthProgressDlg::OnInitDialog() {
     return TRUE;
 }
 
-void CAuthProgressDlg::OnPaint() {
+void CTaskProgressDlg::OnPaint() {
     CPaintDC dc(this);
     CRect rect;
     GetClientRect(&rect);
@@ -101,7 +101,7 @@ void CAuthProgressDlg::OnPaint() {
     screenGraphics.DrawImage(&memBitmap, 0, 0);
 }
 
-void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent) {
+void CTaskProgressDlg::OnTimer(UINT_PTR nIDEvent) {
     if (nIDEvent == 1) {
         m_Frame = (m_Frame + 1) % 10;
         Invalidate(FALSE);
@@ -109,19 +109,19 @@ void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent) {
     CDialogEx::OnTimer(nIDEvent);
 }
 
-void CAuthProgressDlg::OnBnClickedCancel() {
+void CTaskProgressDlg::OnBnClickedCancel() {
     // TODO: Add your control notification handler code here
     m_hasCancelled = true;
     CDialogEx::OnCancel();
 }
 
-void CAuthProgressDlg::OnDestroy() {
+void CTaskProgressDlg::OnDestroy() {
     m_hasCancelled = true;
     KillTimer(1);
     CDialogEx::OnDestroy();
 }
 
-HBRUSH CAuthProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
+HBRUSH CTaskProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
     HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
     // Set dialog background color
@@ -136,11 +136,11 @@ HBRUSH CAuthProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
     return hbr;
 }
 
-BOOL CAuthProgressDlg::OnEraseBkgnd(CDC* pDC) {
+BOOL CTaskProgressDlg::OnEraseBkgnd(CDC* pDC) {
     return TRUE; // Prevent background erase to reduce flicker
 }
 
-void CAuthProgressDlg::PostNcDestroy() {
+void CTaskProgressDlg::PostNcDestroy() {
     // GDI+ shutdown
     GdiplusShutdown(m_gdiplusToken);
     CDialogEx::PostNcDestroy();

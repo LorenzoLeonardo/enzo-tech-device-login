@@ -3,14 +3,14 @@
 
 #include <gdiplus.h>
 using namespace Gdiplus;
-// CAuthProgressDlg dialog
+// CTaskProgressDlg dialog
 
-class CAuthProgressDlg : public CDialogEx {
-    DECLARE_DYNAMIC(CAuthProgressDlg)
+class CTaskProgressDlg : public CDialogEx {
+    DECLARE_DYNAMIC(CTaskProgressDlg)
 
   public:
-    CAuthProgressDlg(CWnd* pParent = nullptr); // standard constructor
-    virtual ~CAuthProgressDlg();
+    CTaskProgressDlg(CWnd* pParent = nullptr); // standard constructor
+    virtual ~CTaskProgressDlg();
 
     virtual BOOL OnInitDialog();
     afx_msg void OnPaint();

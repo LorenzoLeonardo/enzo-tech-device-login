@@ -45,7 +45,7 @@
     <ClInclude Include="CCustomClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CAuthProgressDlg.h">
+    <ClInclude Include="CTaskProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Settings.h">
@@ -83,7 +83,7 @@
     <ClCompile Include="CCustomClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CAuthProgressDlg.cpp">
+    <ClCompile Include="CTaskProgressDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CScalableBitmapStatic.cpp">

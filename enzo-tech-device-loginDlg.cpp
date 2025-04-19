@@ -4,7 +4,7 @@
 #include "pch.h"
 
 #include "AsyncTaskWithDialog.h"
-#include "CAuthProgressDlg.h"
+#include "CTaskProgressDlg.h"
 #include "Communicator.h"
 #include "MessageBoxCustomizer.h"
 #include "Settings.h"
@@ -285,12 +285,12 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("login");
 
-    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(_T("Badging In..."));
 
     ApiResponse resp =
-        CAsyncTaskWithDialog<CAuthProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CAuthProgressDlg*
+        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
                                                                                     dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
@@ -364,12 +364,12 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("logout");
 
-    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(_T("Badging Out..."));
 
     ApiResponse resp =
-        CAsyncTaskWithDialog<CAuthProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CAuthProgressDlg*
+        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
                                                                                     dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
