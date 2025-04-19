@@ -39,6 +39,8 @@ END_MESSAGE_MAP()
 BOOL CAuthProgressDlg::OnInitDialog() {
     CDialogEx::OnInitDialog();
 
+    CenterWindow(AfxGetMainWnd());
+
     GdiplusStartupInput gdiplusStartupInput;
     GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, nullptr);
 
