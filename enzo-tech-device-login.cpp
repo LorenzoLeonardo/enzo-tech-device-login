@@ -68,6 +68,17 @@ static bool PerformLoginFlow(const CString& path, CAuthProgressDlg* pWaitDlg) {
                              MB_OK | MB_ICONERROR);
                 return false;
             }
+        } else if (std::holds_alternative<HttpError>(resp)) {
+            HttpError response = std::get<HttpError>(resp);
+
+            CString error(response.http_error.c_str());
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
+                         MB_OK | MB_ICONERROR);
+            return false;
+        } else {
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
+                         MB_OK | MB_ICONERROR);
+            return false;
         }
         Sleep(5000);
     }
