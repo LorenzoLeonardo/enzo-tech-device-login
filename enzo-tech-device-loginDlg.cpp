@@ -168,9 +168,11 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
     if (prev_action == _T("login")) {
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
+        m_ctrlBtnLogout.SetFocus();
     } else {
-        m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
+        m_ctrlBtnLogin.EnableWindow(TRUE);
+        m_ctrlBtnLogin.SetFocus();
     }
     m_ctrlStaticLogo.SetBitmapResource(IDB_BITMAP1);
     m_clockThread = std::thread(&CenzotechdeviceloginDlg::ClockThread, this);
@@ -302,6 +304,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         }
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
+        m_ctrlBtnLogout.SetFocus();
 
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"), _T("Information"),
                      MB_OK | MB_ICONINFORMATION);
@@ -368,8 +371,9 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                          _T("Information"), MB_OK | MB_ICONERROR);
             EndDialog(IDOK);
         }
-        m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogout.EnableWindow(FALSE);
+        m_ctrlBtnLogin.EnableWindow(TRUE);
+        m_ctrlBtnLogin.SetFocus();
 
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge OUT successful"), _T("Information"),
                      MB_OK | MB_ICONINFORMATION);
