@@ -3,24 +3,25 @@
 //
 #include "pch.h"
 
+#include "AsyncTaskWithDialog.h"
+#include "CAuthProgressDlg.h"
+#include "Communicator.h"
 #include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
 #include "enzo-tech-device-loginDlg.h"
 #include "framework.h"
-
-#include <afxwin.h>
-#include <wininet.h>
-#pragma comment(lib, "wininet.lib")
-
 #include "json.hpp"
-using json = nlohmann::json;
-
-#include "Communicator.h"
 #include "utils.h"
+#include <afxwin.h>
 #include <atlconv.h>
 #include <atomic>
+#include <wininet.h>
+
+#pragma comment(lib, "wininet.lib")
+
+using json = nlohmann::json;
 
 #ifdef _DEBUG
 #    define new DEBUG_NEW
@@ -284,16 +285,25 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("login");
 
-    ApiResponse resp = HttpPost<DeviceEvent>(
-        DeviceEvent{
-            std::string(CW2A(session_id.GetString(), CP_UTF8)),
-            std::string(CW2A(user_id.GetString(), CP_UTF8)),
-            std::string(CW2A(username.GetString(), CP_UTF8)),
-            std::string(CW2A(timestamp.GetString(), CP_UTF8)),
-            std::string(CW2A(action.GetString(), CP_UTF8)),
-            std::string(CW2A(device_id.GetString(), CP_UTF8)),
-        },
-        Settings::GetInstance().HostName(), _T("/applications/device_login"));
+    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
+    pAuthDlg->SetWindowText(_T("Badging In..."));
+
+    ApiResponse resp =
+        CAsyncTaskWithDialog<CAuthProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CAuthProgressDlg*
+                                                                                    dlg) {
+            return HttpPost<DeviceEvent>(
+                DeviceEvent{
+                    std::string(CW2A(session_id.GetString(), CP_UTF8)),
+                    std::string(CW2A(user_id.GetString(), CP_UTF8)),
+                    std::string(CW2A(username.GetString(), CP_UTF8)),
+                    std::string(CW2A(timestamp.GetString(), CP_UTF8)),
+                    std::string(CW2A(action.GetString(), CP_UTF8)),
+                    std::string(CW2A(device_id.GetString(), CP_UTF8)),
+                },
+                Settings::GetInstance().HostName(), _T("/applications/device_login"));
+        }).Run();
+
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
@@ -354,16 +364,25 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("logout");
 
-    ApiResponse resp = HttpPost<DeviceEvent>(
-        DeviceEvent{
-            std::string(CW2A(session_id.GetString(), CP_UTF8)),
-            std::string(CW2A(user_id.GetString(), CP_UTF8)),
-            std::string(CW2A(username.GetString(), CP_UTF8)),
-            std::string(CW2A(timestamp.GetString(), CP_UTF8)),
-            std::string(CW2A(action.GetString(), CP_UTF8)),
-            std::string(CW2A(device_id.GetString(), CP_UTF8)),
-        },
-        Settings::GetInstance().HostName(), _T("/applications/device_login"));
+    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
+    pAuthDlg->SetWindowText(_T("Badging Out..."));
+
+    ApiResponse resp =
+        CAsyncTaskWithDialog<CAuthProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CAuthProgressDlg*
+                                                                                    dlg) {
+            return HttpPost<DeviceEvent>(
+                DeviceEvent{
+                    std::string(CW2A(session_id.GetString(), CP_UTF8)),
+                    std::string(CW2A(user_id.GetString(), CP_UTF8)),
+                    std::string(CW2A(username.GetString(), CP_UTF8)),
+                    std::string(CW2A(timestamp.GetString(), CP_UTF8)),
+                    std::string(CW2A(action.GetString(), CP_UTF8)),
+                    std::string(CW2A(device_id.GetString(), CP_UTF8)),
+                },
+                Settings::GetInstance().HostName(), _T("/applications/device_login"));
+        }).Run();
+
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
