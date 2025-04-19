@@ -23,6 +23,7 @@ class CTaskProgressDlg : public CDialogEx {
     CBrush m_brBackground;
     CBrush m_dotBrush;
     ULONG_PTR m_gdiplusToken;
+    CString m_bodyText;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_AUTH_PROGRESS };
@@ -35,7 +36,8 @@ class CTaskProgressDlg : public CDialogEx {
 
   public:
     afx_msg void OnBnClickedCancel();
-    bool HasCancelled() { return m_hasCancelled; }
+    bool HasCancelled() const { return m_hasCancelled; }
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    void SetBodyText(LPCTSTR text);
 };

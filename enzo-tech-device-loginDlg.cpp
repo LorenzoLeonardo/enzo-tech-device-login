@@ -287,8 +287,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
-    pAuthDlg->SetWindowText(_T("Badging In..."));
-
+    pAuthDlg->SetWindowText(_T("Connecting..."));
+    pAuthDlg->SetBodyText(_T("Badging In..."));
     ApiResponse resp =
         CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
                                                                                     dlg) {
@@ -366,7 +366,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
 
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
-    pAuthDlg->SetWindowText(_T("Badging Out..."));
+    pAuthDlg->SetWindowText(_T("Connecting..."));
+    pAuthDlg->SetBodyText(_T("Badging Out..."));
 
     ApiResponse resp =
         CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*

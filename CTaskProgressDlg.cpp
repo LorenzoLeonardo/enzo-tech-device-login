@@ -145,3 +145,7 @@ void CTaskProgressDlg::PostNcDestroy() {
     GdiplusShutdown(m_gdiplusToken);
     CDialogEx::PostNcDestroy();
 }
+
+void CTaskProgressDlg::SetBodyText(LPCTSTR text) {
+    SetDlgItemText(IDC_STATIC_AUTHENTICATING_LABEL, text);
+}
