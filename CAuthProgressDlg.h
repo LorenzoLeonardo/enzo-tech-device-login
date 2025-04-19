@@ -19,6 +19,7 @@ class CAuthProgressDlg : public CDialogEx {
     int m_Frame;
     bool m_hasCancelled = false;
     CBrush m_brBackground;
+    CBrush m_dotBrush;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_AUTH_PROGRESS };
@@ -33,4 +34,5 @@ class CAuthProgressDlg : public CDialogEx {
     afx_msg void OnBnClickedCancel();
     bool HasCancelled() { return m_hasCancelled; }
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
