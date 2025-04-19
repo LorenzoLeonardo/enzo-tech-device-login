@@ -8,6 +8,10 @@
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
 // CAuthProgressDlg dialog
+#include <gdiplus.h>
+using namespace Gdiplus;
+
+#pragma comment(lib, "gdiplus.lib")
 
 IMPLEMENT_DYNAMIC(CAuthProgressDlg, CDialogEx)
 
@@ -35,6 +39,9 @@ END_MESSAGE_MAP()
 BOOL CAuthProgressDlg::OnInitDialog() {
     CDialogEx::OnInitDialog();
 
+    GdiplusStartupInput gdiplusStartupInput;
+    GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, nullptr);
+
     // Add styles to reduce flicker
     LONG style = GetWindowLong(m_hWnd, GWL_STYLE);
     style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
@@ -50,15 +57,18 @@ void CAuthProgressDlg::OnPaint() {
     CRect rect;
     GetClientRect(&rect);
 
-    CDC memDC;
-    memDC.CreateCompatibleDC(&dc);
+    // Create a memory bitmap and graphics context for double buffering
+    Bitmap memBitmap(rect.Width(), rect.Height(), PixelFormat32bppARGB);
+    Graphics memGraphics(&memBitmap);
 
-    CBitmap memBitmap;
-    memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
-    CBitmap* pOldBitmap = memDC.SelectObject(&memBitmap);
+    // Set high-quality rendering
+    memGraphics.SetSmoothingMode(SmoothingModeAntiAlias);
+    memGraphics.SetCompositingQuality(CompositingQualityHighQuality);
+    memGraphics.SetInterpolationMode(InterpolationModeHighQualityBicubic);
 
-    // Fill background
-    memDC.FillSolidRect(&rect, RGB(13, 71, 161));
+    // Clear background with a solid color
+    SolidBrush backgroundBrush(Color(255, 13, 71, 161)); // Blue background
+    memGraphics.FillRectangle(&backgroundBrush, 0, 0, rect.Width(), rect.Height());
 
     const int dotCount = 10;
     const int radius = 4;
@@ -66,27 +76,35 @@ void CAuthProgressDlg::OnPaint() {
     const double angleStep = 2 * 3.14159265 / dotCount;
     CPoint center(rect.Width() / 2, rect.Height() / 2);
 
+    // Loop through each dot and apply fading
     for (int i = 0; i < dotCount; ++i) {
-        double angle = angleStep * ((i + m_Frame) % dotCount);
+        int index = (i + m_Frame) % dotCount;
+        double angle = angleStep * index;
         int x = static_cast<int>(center.x + orbitRadius * cos(angle));
         int y = static_cast<int>(center.y + orbitRadius * sin(angle));
 
-        int r = (i == 0) ? radius + 2 : radius;
-        CBrush* pOldBrush = memDC.SelectObject(&m_dotBrush);
-        memDC.SetBkMode(TRANSPARENT);
-        memDC.Ellipse(x - r, y - r, x + r, y + r);
-        memDC.SelectObject(pOldBrush);
+        // Fade effect: make each dot fade in and out more gradually
+        // Use a sine function for smooth fading
+        double fadeFactor = (sin(m_Frame * 0.1 + i * 0.5) + 1) / 2; // Oscillates between 0 and 1
+        int alpha = static_cast<int>(255 * fadeFactor); // Apply fade based on sine oscillation
+
+        Color color(alpha, 255, 255, 255); // White color with fading alpha
+        SolidBrush brush(color);
+
+        // Draw the dot with fading effect
+        memGraphics.FillEllipse(&brush, x - radius, y - radius, radius * 2, radius * 2);
     }
 
-    // Blit to screen
-    dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
-
-    memDC.SelectObject(pOldBitmap);
+    // Blit from memory bitmap to the screen
+    Graphics screenGraphics(dc);
+    screenGraphics.DrawImage(&memBitmap, 0, 0);
 }
 
 void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent) {
-    m_Frame = (m_Frame + 1) % 10;
-    RedrawWindow(nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOERASE);
+    if (nIDEvent == 1) {
+        m_Frame = (m_Frame + 1) % 10;
+        Invalidate(FALSE);
+    }
     CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -119,4 +137,10 @@ HBRUSH CAuthProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
 
 BOOL CAuthProgressDlg::OnEraseBkgnd(CDC* pDC) {
     return TRUE; // Prevent background erase to reduce flicker
+}
+
+void CAuthProgressDlg::PostNcDestroy() {
+    // GDI+ shutdown
+    GdiplusShutdown(m_gdiplusToken);
+    CDialogEx::PostNcDestroy();
 }

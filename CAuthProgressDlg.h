@@ -1,6 +1,8 @@
 #pragma once
 #include "afxdialogex.h"
 
+#include <gdiplus.h>
+using namespace Gdiplus;
 // CAuthProgressDlg dialog
 
 class CAuthProgressDlg : public CDialogEx {
@@ -20,6 +22,7 @@ class CAuthProgressDlg : public CDialogEx {
     bool m_hasCancelled = false;
     CBrush m_brBackground;
     CBrush m_dotBrush;
+    ULONG_PTR m_gdiplusToken;
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_AUTH_PROGRESS };
@@ -27,7 +30,7 @@ class CAuthProgressDlg : public CDialogEx {
 
   protected:
     virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
-
+    virtual void PostNcDestroy();
     DECLARE_MESSAGE_MAP()
 
   public:
