@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 BOOL CAuthProgressDlg::OnInitDialog() {
     CDialogEx::OnInitDialog();
 
-    SetTimer(1, 100, nullptr); // 100ms interval for smooth rotation
+    SetTimer(1, 50, nullptr); // 50ms interval for smooth rotation
     return TRUE;
 }
 
@@ -74,7 +74,7 @@ void CAuthProgressDlg::OnPaint() {
 
 void CAuthProgressDlg::OnTimer(UINT_PTR nIDEvent) {
     m_Frame = (m_Frame + 1) % 10;
-    Invalidate();
+    RedrawWindow();
     CDialogEx::OnTimer(nIDEvent);
 }
 
