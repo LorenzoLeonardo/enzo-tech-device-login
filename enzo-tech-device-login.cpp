@@ -5,6 +5,7 @@
 
 #include "CAuthProgressDlg.h"
 #include "Communicator.h"
+#include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "Uuid.h"
 #include "enzo-tech-device-login.h"
@@ -193,6 +194,8 @@ CenzotechdeviceloginApp theApp;
 
 // CenzotechdeviceloginApp initialization
 BOOL CenzotechdeviceloginApp::InitInstance() {
+    MessageBoxCustomizer::Instance().Initialize();
+
     HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
 
     if (GetLastError() == ERROR_ALREADY_EXISTS) {

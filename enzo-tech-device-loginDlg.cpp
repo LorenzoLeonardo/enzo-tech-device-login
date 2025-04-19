@@ -3,6 +3,7 @@
 //
 #include "pch.h"
 
+#include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
@@ -24,6 +25,9 @@ using json = nlohmann::json;
 #ifdef _DEBUG
 #    define new DEBUG_NEW
 #endif
+
+COLORREF DLG_BACKGROUND = RGB(13, 71, 161);
+COLORREF GROUP_BACKGROUND = RGB(66, 165, 245);
 
 // CAboutDlg dialog used for App About
 
@@ -54,9 +58,6 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 // CenzotechdeviceloginDlg dialog
-
-COLORREF DLG_BACKGROUND = RGB(13, 71, 161);
-COLORREF GROUP_BACKGROUND = RGB(66, 165, 245);
 
 CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_ENZOTECHDEVICELOGIN_DIALOG, pParent) {
@@ -272,6 +273,7 @@ HCURSOR CenzotechdeviceloginDlg::OnQueryDragIcon() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
+    MessageBoxCustomizer::Instance().Initialize();
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
@@ -341,6 +343,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
+    MessageBoxCustomizer::Instance().Initialize();
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);

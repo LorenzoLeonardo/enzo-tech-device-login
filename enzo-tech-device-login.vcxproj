@@ -194,6 +194,7 @@
     <ClInclude Include="enzo-tech-device-login.h" />
     <ClInclude Include="enzo-tech-device-loginDlg.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MessageBoxCustomizer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Settings.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="CScalableBitmapStatic.cpp" />
     <ClCompile Include="enzo-tech-device-login.cpp" />
     <ClCompile Include="enzo-tech-device-loginDlg.cpp" />
+    <ClCompile Include="MessageBoxCustomizer.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
