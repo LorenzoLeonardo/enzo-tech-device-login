@@ -407,26 +407,53 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
 
 void CenzotechdeviceloginDlg::OnMouseMove(UINT nFlags, CPoint point) {
     CRect rect;
-    m_ctrlStaticLogo.GetWindowRect(&rect); // Get screen coordinates
-    ScreenToClient(&rect);                 // Convert to client coordinates
+    m_ctrlStaticLogo.GetWindowRect(&rect); // Physical screen coordinates
+    ScreenToClient(&rect);                 // Physical client coordinates
 
+    CPaintDC dc(this);
+
+    int dpiX = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSX);
+    int dpiY = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSY);
+    float scaleX = dpiX / 96.0f;
+    float scaleY = dpiY / 96.0f;
+
+    // Control size in logical pixels
+    int logicalWidth = static_cast<int>(rect.Width() * scaleX);
+    int logicalHeight = static_cast<int>(rect.Height() * scaleY);
+
+    rect.right = rect.left + logicalWidth;
+    rect.bottom = rect.top + logicalHeight;
     if (rect.PtInRect(point)) {
         SetCursor(LoadCursor(NULL, IDC_HAND));
     }
 
-    CDialogEx::OnMouseMove(nFlags, point); // Call base class handler
+    CDialogEx::OnMouseMove(nFlags, point);
 }
 
 void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     CRect rect;
-    m_ctrlStaticLogo.GetWindowRect(&rect); // Get screen coordinates
-    ScreenToClient(&rect);                 // Convert to client coordinates
+    m_ctrlStaticLogo.GetWindowRect(&rect); // Physical screen coordinates
+    ScreenToClient(&rect);                 // Physical client coordinates
 
-    if (rect.PtInRect(point)) {
+    CPaintDC dc(this);
+
+    int dpiX = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSX);
+    int dpiY = GetDeviceCaps(dc.GetSafeHdc(), LOGPIXELSY);
+    float scaleX = dpiX / 96.0f;
+    float scaleY = dpiY / 96.0f;
+
+    // Control size in logical pixels
+    int logicalWidth = static_cast<int>(rect.Width() * scaleX);
+    int logicalHeight = static_cast<int>(rect.Height() * scaleY);
+
+    rect.right = rect.left + logicalWidth;
+    rect.bottom = rect.top + logicalHeight;
+    if (rect.PtInRect(point)) { // point is also in physical client coords
         ShellExecute(NULL, _T("open"),
                      Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"), NULL,
                      NULL, SW_SHOWNORMAL);
     }
+
     CDialogEx::OnLButtonDown(nFlags, point);
 }
 
