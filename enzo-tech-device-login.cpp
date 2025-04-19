@@ -3,6 +3,7 @@
 //
 #include "pch.h"
 
+#include "AsyncTaskWithDialog.h"
 #include "CAuthProgressDlg.h"
 #include "Communicator.h"
 #include "MessageBoxCustomizer.h"
@@ -237,36 +238,15 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
                      _T("Information"), MB_OK | MB_ICONINFORMATION);
     }
 
-    auto pWaitDlg = std::make_unique<CAuthProgressDlg>();
+    auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
+    pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
 
-    pWaitDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
-    pWaitDlg->ShowWindow(SW_SHOW);
-
-    std::atomic<bool> isDone{false};
-    bool is_success = false;
-
-    std::thread authThread([&]() {
-        is_success = (isDefault ? PerformLoginFlow(path, pWaitDlg.get())
-                                : CheckExistingSession(session_id, path)) &&
-                     GetServerVersion(path);
-        isDone = true;
-    });
-    authThread.detach();
-
-    // Pump messages while waiting
-    MSG msg;
-    while (!isDone) {
-        while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-        }
-        Sleep(10); // Let CPU rest
-    }
-
-    // Done — close the dialog
-    if (pWaitDlg && ::IsWindow(pWaitDlg->GetSafeHwnd())) {
-        pWaitDlg->DestroyWindow();
-    }
+    bool is_success =
+        CAsyncTaskWithDialog<CAuthProgressDlg, bool>(pAuthDlg.get(), [&](CAuthProgressDlg* dlg) {
+            return (isDefault ? PerformLoginFlow(path, dlg)
+                              : CheckExistingSession(session_id, path)) &&
+                   GetServerVersion(path);
+        }).Run();
 
     if (is_success) {
         ShowMainDialog();

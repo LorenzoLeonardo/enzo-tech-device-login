@@ -57,6 +57,9 @@
     <ClInclude Include="MessageBoxCustomizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AsyncTaskWithDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="enzo-tech-device-login.cpp">
