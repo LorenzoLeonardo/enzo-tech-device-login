@@ -240,6 +240,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     auto pAuthDlg = std::make_unique<CAuthProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
+    pAuthDlg->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
 
     bool is_success =
         CAsyncTaskWithDialog<CAuthProgressDlg, bool>(pAuthDlg.get(), [&](CAuthProgressDlg* dlg) {

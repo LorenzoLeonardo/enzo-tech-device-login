@@ -48,7 +48,6 @@ BOOL CAuthProgressDlg::OnInitDialog() {
     SetWindowLong(m_hWnd, GWL_STYLE, style);
 
     SetTimer(1, 50, nullptr); // 50ms interval for smooth rotation
-    this->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
     return TRUE;
 }
 
