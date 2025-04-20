@@ -77,7 +77,8 @@ PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
             return false;
         } else {
-            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                LoadLocalizedString(IDS_ERROR_UNKNOWN));
             return false;
         }
         Sleep(5000);
@@ -141,7 +142,8 @@ CheckExistingSession(const CString& session_id, const CString& path,
         CString error(response.http_error.c_str());
         showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
     } else {
-        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                            LoadLocalizedString(IDS_ERROR_UNKNOWN));
     }
 
     return false;
@@ -171,7 +173,8 @@ GetServerVersion(const CString& path,
 
         showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
     } else {
-        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                            LoadLocalizedString(IDS_ERROR_UNKNOWN));
     }
 
     return false;

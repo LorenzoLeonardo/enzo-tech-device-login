@@ -347,7 +347,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     } else {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"),
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_ERROR_UNKNOWN),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     }
 }
@@ -427,7 +427,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     } else {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"),
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_ERROR_UNKNOWN),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     }
 }
