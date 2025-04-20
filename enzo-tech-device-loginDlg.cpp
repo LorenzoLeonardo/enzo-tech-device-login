@@ -302,7 +302,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                     std::string(CW2A(device_id.GetString(), CP_UTF8)),
                 },
                 Settings::GetInstance().HostName(), _T("/applications/device_login"));
-        }).Run();
+        }).Await();
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
@@ -382,7 +382,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                     std::string(CW2A(device_id.GetString(), CP_UTF8)),
                 },
                 Settings::GetInstance().HostName(), _T("/applications/device_login"));
-        }).Run();
+        }).Await();
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);

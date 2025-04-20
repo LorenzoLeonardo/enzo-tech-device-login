@@ -14,7 +14,7 @@ class CAsyncTaskWithDialog {
     CAsyncTaskWithDialog(TDialog* pDialog, TaskFunc taskFunc)
         : m_pDialog(pDialog), m_taskFunc(taskFunc), m_isDone(false) {}
 
-    TResult Run() {
+    TResult Await() {
         if (m_pDialog && ::IsWindow(m_pDialog->GetSafeHwnd())) {
             m_pDialog->ShowWindow(SW_SHOW);
         }

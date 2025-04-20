@@ -237,10 +237,11 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     bool is_success =
         CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
-            return (isDefault ? PerformLoginFlow(path, dlg, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
-                              : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&
+            return (isDefault
+                        ? PerformLoginFlow(path, dlg, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
+                        : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&
                    GetServerVersion(path, LAMBDA_SHOW_MSGBOX_ERROR(dlg));
-        }).Run();
+        }).Await();
 
     if (is_success) {
         ShowMainDialog();
