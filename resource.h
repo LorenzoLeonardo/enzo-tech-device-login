@@ -6,6 +6,17 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_ENZOTECHDEVICELOGIN_DIALOG  102
+#define IDS_ERROR_INI_FILE_WRITE        102
+#define IDS_ERROR_INI_FILE_READ         103
+#define IDS_ERROR_SESSION_EXPIRED       104
+#define IDS_ERROR_SERVER                105
+#define IDS_ERROR_UNKNOWN               106
+#define IDS_INFO_LOGIN_FIRST            107
+#define IDS_INFO_BADGE_IN               108
+#define IDS_INFO_BADGE_OUT              109
+#define IDS_TITLE_CONNECTING            110
+#define IDS_TITLE_INFORMATION           111
+#define IDS_TEXT_AUTHENTICATING         112
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133
