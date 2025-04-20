@@ -481,9 +481,13 @@ void CenzotechdeviceloginDlg::OnLButtonDown(UINT nFlags, CPoint point) {
     rect.right = rect.left + logicalWidth;
     rect.bottom = rect.top + logicalHeight;
     if (rect.PtInRect(point)) { // point is also in physical client coords
+        CString path = GetIniFilePath(_T("user.ini"));
+        CString session_id =
+            ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
         ShellExecute(NULL, _T("open"),
-                     Settings::GetInstance().Url() + _T("/applications/timekeeping?page=1"), NULL,
-                     NULL, SW_SHOWNORMAL);
+                     Settings::GetInstance().Url() +
+                         _T("/applications/timekeeping?page=1&session_id=") + session_id,
+                     NULL, NULL, SW_SHOWNORMAL);
     }
 
     CDialogEx::OnLButtonDown(nFlags, point);
