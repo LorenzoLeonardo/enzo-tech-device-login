@@ -310,7 +310,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
-            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                         LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
             EndDialog(IDOK);
         }
@@ -328,7 +329,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                 WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"),
                                           path);
             if (!success) {
-                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                             LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE),
                              LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
                 EndDialog(IDOK);
             }
@@ -390,7 +392,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
 
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
-            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                         LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
             EndDialog(IDOK);
         }
@@ -408,7 +411,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                 WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"),
                                           path);
             if (!success) {
-                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
+                ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                             LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE),
                              LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
                 EndDialog(IDOK);
             }

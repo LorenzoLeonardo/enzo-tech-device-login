@@ -58,7 +58,7 @@ PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
                            WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
             if (!success) {
                 showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                    _T("Error writing to ini file."));
+                                    LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE));
                 return false;
             }
             return true;
@@ -114,7 +114,7 @@ CheckExistingSession(const CString& session_id, const CString& path,
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                _T("Error writing to ini file."));
+                                LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE));
             return false;
         }
         return true;
@@ -127,7 +127,7 @@ CheckExistingSession(const CString& session_id, const CString& path,
                                           path);
             if (!success) {
                 showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                    _T("Error writing to ini file."));
+                                    LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE));
                 return false;
             }
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
@@ -163,7 +163,7 @@ GetServerVersion(const CString& path,
                        WritePrivateProfileString(_T("User"), _T("Serverversion"), Version, path);
         if (!success) {
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                _T("Error writing to ini file."));
+                                LoadLocalizedString(IDS_ERROR_INI_FILE_WRITE));
             return false;
         }
         return true;
