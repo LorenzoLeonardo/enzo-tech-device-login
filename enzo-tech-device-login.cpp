@@ -57,7 +57,8 @@ PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
                            WritePrivateProfileString(_T("User"), _T("email"), email, path) &&
                            WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
             if (!success) {
-                showMessageCallback(_T("Information"), _T("Error writing to ini file."));
+                showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                    _T("Error writing to ini file."));
                 return false;
             }
             return true;
@@ -66,17 +67,17 @@ PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
             if (response.error != ErrorCodes::authorization_pending) {
                 CString error;
                 error.Format(_T("Server error: %d"), response.error);
-                showMessageCallback(_T("Information"), error.GetString());
+                showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
                 return false;
             }
         } else if (std::holds_alternative<HttpError>(resp)) {
             HttpError response = std::get<HttpError>(resp);
             CString error(response.http_error.c_str());
 
-            showMessageCallback(_T("Information"), error.GetString());
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
             return false;
         } else {
-            showMessageCallback(_T("Information"), _T("Unknown error"));
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
             return false;
         }
         Sleep(5000);
@@ -111,7 +112,8 @@ CheckExistingSession(const CString& session_id, const CString& path,
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
-            showMessageCallback(_T("Information"), _T("Error writing to ini file."));
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                _T("Error writing to ini file."));
             return false;
         }
         return true;
@@ -123,21 +125,23 @@ CheckExistingSession(const CString& session_id, const CString& path,
                 WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"),
                                           path);
             if (!success) {
-                showMessageCallback(_T("Information"), _T("Error writing to ini file."));
+                showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                    _T("Error writing to ini file."));
                 return false;
             }
-            showMessageCallback(_T("Information"),
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
                                 _T("Session has expired. Please run the program again."));
         } else {
-            showMessageCallback(_T("Information"), _T("Server Error. Please try again."));
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                _T("Server Error. Please try again."));
         }
     } else if (std::holds_alternative<HttpError>(resp)) {
         HttpError response = std::get<HttpError>(resp);
 
         CString error(response.http_error.c_str());
-        showMessageCallback(_T("Information"), error.GetString());
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
     } else {
-        showMessageCallback(_T("Information"), _T("Unknown error"));
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
     }
 
     return false;
@@ -156,7 +160,8 @@ GetServerVersion(const CString& path,
         BOOL success = WritePrivateProfileString(_T("User"), _T("Servername"), Name, path) &&
                        WritePrivateProfileString(_T("User"), _T("Serverversion"), Version, path);
         if (!success) {
-            showMessageCallback(_T("Information"), _T("Error writing to ini file."));
+            showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
+                                _T("Error writing to ini file."));
             return false;
         }
         return true;
@@ -164,9 +169,9 @@ GetServerVersion(const CString& path,
         HttpError response = std::get<HttpError>(resp);
         CString error(response.http_error.c_str());
 
-        showMessageCallback(_T("Information"), error.GetString());
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), error.GetString());
     } else {
-        showMessageCallback(_T("Information"), _T("Unknown error"));
+        showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION), _T("Unknown error"));
     }
 
     return false;
@@ -206,7 +211,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                      _T("Another instance of the application is already running."),
-                     _T("Information"), MB_OK | MB_ICONERROR);
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         return FALSE; // Exit the application
     }
     INITCOMMONCONTROLSEX InitCtrls = {sizeof(InitCtrls), ICC_WIN95_CLASSES};
@@ -228,7 +233,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     if (IsDefaultSession(session_id, user_id)) {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                      _T("Session ID or User ID is not set. Please log in first."),
-                     _T("Information"), MB_OK | MB_ICONINFORMATION);
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     }
 
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();

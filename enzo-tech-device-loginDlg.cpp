@@ -311,15 +311,15 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
             EndDialog(IDOK);
         }
         m_ctrlBtnLogin.EnableWindow(FALSE);
         m_ctrlBtnLogout.EnableWindow(TRUE);
         m_ctrlBtnLogout.SetFocus();
 
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"), _T("Information"),
-                     MB_OK | MB_ICONINFORMATION);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
@@ -329,26 +329,26 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                                           path);
             if (!success) {
                 ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
-                             _T("Information"), MB_OK | MB_ICONERROR);
+                             LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
                 EndDialog(IDOK);
             }
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                          _T("Session has expired. Please run the program again."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         } else {
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
     } else if (std::holds_alternative<HttpError>(resp)) {
         HttpError response = std::get<HttpError>(resp);
 
         CString error(response.http_error.c_str());
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
-                     MB_OK | MB_ICONERROR);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     } else {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
-                     MB_OK | MB_ICONERROR);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     }
 }
 
@@ -391,15 +391,15 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
             EndDialog(IDOK);
         }
         m_ctrlBtnLogout.EnableWindow(FALSE);
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogin.SetFocus();
 
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge OUT successful"), _T("Information"),
-                     MB_OK | MB_ICONINFORMATION);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge OUT successful"),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
         if (response.error_code == ErrorCodes::invalid_grant) {
@@ -409,26 +409,26 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                                           path);
             if (!success) {
                 ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Error writing to ini file."),
-                             _T("Information"), MB_OK | MB_ICONERROR);
+                             LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
                 EndDialog(IDOK);
             }
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
                          _T("Session has expired. Please run the program again."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         } else {
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
-                         _T("Information"), MB_OK | MB_ICONERROR);
+                         LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
     } else if (std::holds_alternative<HttpError>(resp)) {
         HttpError response = std::get<HttpError>(resp);
 
         CString error(response.http_error.c_str());
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(), _T("Information"),
-                     MB_OK | MB_ICONERROR);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), error.GetString(),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     } else {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"), _T("Information"),
-                     MB_OK | MB_ICONERROR);
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Unknown error"),
+                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
     }
 }
 
