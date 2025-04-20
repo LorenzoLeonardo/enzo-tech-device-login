@@ -214,7 +214,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                     _T("Another instance of the application is already running."),
+                     LoadLocalizedString(IDS_ERROR_ANOTHER_INSTANCE),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         return FALSE; // Exit the application
     }
