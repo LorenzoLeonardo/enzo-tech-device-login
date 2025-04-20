@@ -227,8 +227,6 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-    AfxGetApp()->m_pszAppName = _tcsdup(_T("Notification"));
-
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
@@ -236,7 +234,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     if (IsDefaultSession(session_id, user_id)) {
         ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                     _T("Session ID or User ID is not set. Please log in first."),
+                     LoadLocalizedString(IDS_INFO_PLEASE_AUTHENTICATE),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     }
 

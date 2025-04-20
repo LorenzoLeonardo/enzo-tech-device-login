@@ -19,6 +19,7 @@
 #define IDS_TEXT_AUTHENTICATING         112
 #define IDS_INFO_BADGE_IN_SUCCESS       113
 #define IDS_INFO_BADGE_OUT_SUCCESS      114
+#define IDS_INFO_PLEASE_AUTHENTICATE    115
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133
