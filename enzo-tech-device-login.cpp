@@ -131,10 +131,10 @@ CheckExistingSession(const CString& session_id, const CString& path,
                 return false;
             }
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                _T("Session has expired. Please run the program again."));
+                                LoadLocalizedString(IDS_ERROR_SESSION_EXPIRED));
         } else {
             showMessageCallback(LoadLocalizedString(IDS_TITLE_INFORMATION),
-                                _T("Server Error. Please try again."));
+                                LoadLocalizedString(IDS_ERROR_SERVER));
         }
     } else if (std::holds_alternative<HttpError>(resp)) {
         HttpError response = std::get<HttpError>(resp);

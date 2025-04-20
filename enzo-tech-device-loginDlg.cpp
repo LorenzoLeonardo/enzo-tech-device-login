@@ -335,7 +335,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                 EndDialog(IDOK);
             }
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                         _T("Session has expired. Please run the program again."),
+                         LoadLocalizedString(IDS_ERROR_SESSION_EXPIRED),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         } else {
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
@@ -417,10 +417,10 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                 EndDialog(IDOK);
             }
             ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                         _T("Session has expired. Please run the program again."),
+                         LoadLocalizedString(IDS_ERROR_SESSION_EXPIRED),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         } else {
-            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_ERROR_SERVER),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
