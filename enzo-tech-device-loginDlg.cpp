@@ -287,8 +287,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
-    pAuthDlg->SetWindowText(_T("Connecting..."));
-    pAuthDlg->SetBodyText(_T("Badging In..."));
+    pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
+    pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_IN));
     ApiResponse resp =
         CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
                                                                                     dlg) {
@@ -319,7 +319,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
         m_ctrlBtnLogout.EnableWindow(TRUE);
         m_ctrlBtnLogout.SetFocus();
 
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge IN successful"),
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_INFO_BADGE_IN_SUCCESS),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
@@ -338,7 +338,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                          LoadLocalizedString(IDS_ERROR_SESSION_EXPIRED),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         } else {
-            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Server Error. Please try again."),
+            ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_ERROR_SERVER),
                          LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         }
         EndDialog(IDOK);
@@ -368,8 +368,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
 
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
-    pAuthDlg->SetWindowText(_T("Connecting..."));
-    pAuthDlg->SetBodyText(_T("Badging Out..."));
+    pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
+    pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
 
     ApiResponse resp =
         CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
@@ -401,7 +401,8 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
         m_ctrlBtnLogin.EnableWindow(TRUE);
         m_ctrlBtnLogin.SetFocus();
 
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(), _T("Badge OUT successful"),
+        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
+                     LoadLocalizedString(IDS_INFO_BADGE_OUT_SUCCESS),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
     } else if (std::holds_alternative<DeviceLoginResponseError>(resp)) {
         DeviceLoginResponseError response = std::get<DeviceLoginResponseError>(resp);
