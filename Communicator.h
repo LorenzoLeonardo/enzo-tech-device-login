@@ -90,6 +90,12 @@ struct HttpError {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(HttpError, status_code, http_error)
 
+#define RETURN_HTTP_ERROR(error, msg)                                                              \
+    do {                                                                                           \
+        TRACE(traceAppMsg, 0, "Error: (%d)%s.\n", error, msg.c_str());                             \
+        return HttpError{error, msg};                                                              \
+    } while (0)
+
 struct PackageName {
     std::string Name;
     std::string Version;
@@ -110,7 +116,9 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
     HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
         DWORD error = GetLastError();
-        return HttpError{error, GetLastErrorString(error)};
+        std::string msg = GetLastErrorString(error);
+
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Connect to host
@@ -118,9 +126,10 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
                                          INTERNET_SERVICE_HTTP, 0, 0);
     if (!hConnect) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Open HTTP request
@@ -129,10 +138,11 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
         INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
     if (!hRequest) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Convert jsonData (CString - UTF-16) to UTF-8
@@ -147,11 +157,12 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
 
     if (!success) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hRequest);
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Read the response
@@ -207,7 +218,9 @@ ApiResponse HttpGet(const TInput& input, const CString& host, const CString& end
     HINTERNET hInternet = InternetOpen(_T("MFCApp"), INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
     if (!hInternet) {
         DWORD error = GetLastError();
-        return HttpError{error, GetLastErrorString(error)};
+        std::string msg = GetLastErrorString(error);
+
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Connect to host
@@ -215,9 +228,10 @@ ApiResponse HttpGet(const TInput& input, const CString& host, const CString& end
                                          INTERNET_SERVICE_HTTP, 0, 0);
     if (!hConnect) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Open HTTP GET request
@@ -226,10 +240,11 @@ ApiResponse HttpGet(const TInput& input, const CString& host, const CString& end
         INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE, 0);
     if (!hRequest) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Send the GET request (no body)
@@ -237,11 +252,12 @@ ApiResponse HttpGet(const TInput& input, const CString& host, const CString& end
 
     if (!success) {
         DWORD error = GetLastError();
+        std::string msg = GetLastErrorString(error);
 
         InternetCloseHandle(hRequest);
         InternetCloseHandle(hConnect);
         InternetCloseHandle(hInternet);
-        return HttpError{error, GetLastErrorString(error)};
+        RETURN_HTTP_ERROR(error, msg);
     }
 
     // Read the response

@@ -207,6 +207,7 @@ CenzotechdeviceloginApp theApp;
 
 // CenzotechdeviceloginApp initialization
 BOOL CenzotechdeviceloginApp::InitInstance() {
+    TRACE(traceAppMsg, 0, "Enzo Tech Timekeeping Badger - Started.\n");
     MessageBoxCustomizer::Instance().Initialize();
 
     HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
