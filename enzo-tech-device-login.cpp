@@ -30,8 +30,9 @@ static bool IsDefaultSession(const CString& session_id, const CString& user_id) 
     return (session_id == _T("default_session_id") || user_id == _T("default_user_id"));
 }
 
-static bool PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
-                             std::function<void(const CString&)> showMessageCallback) {
+static bool
+PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
+                 std::function<void(const CString&, const CString&)> showMessageCallback) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
@@ -56,7 +57,7 @@ static bool PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
                            WritePrivateProfileString(_T("User"), _T("email"), email, path) &&
                            WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
             if (!success) {
-                showMessageCallback(_T("Error writing to ini file."));
+                showMessageCallback(_T("Information"), _T("Error writing to ini file."));
                 return false;
             }
             return true;
@@ -65,17 +66,17 @@ static bool PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
             if (response.error != ErrorCodes::authorization_pending) {
                 CString error;
                 error.Format(_T("Server error: %d"), response.error);
-                showMessageCallback(error.GetString());
+                showMessageCallback(_T("Information"), error.GetString());
                 return false;
             }
         } else if (std::holds_alternative<HttpError>(resp)) {
             HttpError response = std::get<HttpError>(resp);
             CString error(response.http_error.c_str());
 
-            showMessageCallback(error.GetString());
+            showMessageCallback(_T("Information"), error.GetString());
             return false;
         } else {
-            showMessageCallback(_T("Unknown error"));
+            showMessageCallback(_T("Information"), _T("Unknown error"));
             return false;
         }
         Sleep(5000);
@@ -83,8 +84,9 @@ static bool PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
     return false;
 }
 
-static bool CheckExistingSession(const CString& session_id, const CString& path,
-                                 std::function<void(const CString&)> showMessageCallback) {
+static bool
+CheckExistingSession(const CString& session_id, const CString& path,
+                     std::function<void(const CString&, const CString&)> showMessageCallback) {
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
     CString name = ReadIniValue(_T("User"), _T("name"), _T("default_name"), path);
     CString email = ReadIniValue(_T("User"), _T("email"), _T("default_email"), path);
@@ -109,7 +111,7 @@ static bool CheckExistingSession(const CString& session_id, const CString& path,
         CString login_status(CA2T(response.login_status.c_str(), CP_UTF8));
         BOOL success = WritePrivateProfileString(_T("User"), _T("action"), login_status, path);
         if (!success) {
-            showMessageCallback(_T("Error writing to ini file."));
+            showMessageCallback(_T("Information"), _T("Error writing to ini file."));
             return false;
         }
         return true;
@@ -121,27 +123,29 @@ static bool CheckExistingSession(const CString& session_id, const CString& path,
                 WritePrivateProfileString(_T("User"), _T("session_id"), _T("default_session_id"),
                                           path);
             if (!success) {
-                showMessageCallback(_T("Error writing to ini file."));
+                showMessageCallback(_T("Information"), _T("Error writing to ini file."));
                 return false;
             }
-            showMessageCallback(_T("Session has expired. Please run the program again."));
+            showMessageCallback(_T("Information"),
+                                _T("Session has expired. Please run the program again."));
         } else {
-            showMessageCallback(_T("Server Error. Please try again."));
+            showMessageCallback(_T("Information"), _T("Server Error. Please try again."));
         }
     } else if (std::holds_alternative<HttpError>(resp)) {
         HttpError response = std::get<HttpError>(resp);
 
         CString error(response.http_error.c_str());
-        showMessageCallback(error.GetString());
+        showMessageCallback(_T("Information"), error.GetString());
     } else {
-        showMessageCallback(_T("Unknown error"));
+        showMessageCallback(_T("Information"), _T("Unknown error"));
     }
 
     return false;
 }
 
-static bool GetServerVersion(const CString& path,
-                             std::function<void(const CString&)> showMessageCallback) {
+static bool
+GetServerVersion(const CString& path,
+                 std::function<void(const CString&, const CString&)> showMessageCallback) {
     ApiResponse resp =
         HttpGet<CString>(_T(""), Settings::GetInstance().HostName(), _T("/server_info"));
 
@@ -152,7 +156,7 @@ static bool GetServerVersion(const CString& path,
         BOOL success = WritePrivateProfileString(_T("User"), _T("Servername"), Name, path) &&
                        WritePrivateProfileString(_T("User"), _T("Serverversion"), Version, path);
         if (!success) {
-            showMessageCallback(_T("Error writing to ini file."));
+            showMessageCallback(_T("Information"), _T("Error writing to ini file."));
             return false;
         }
         return true;
@@ -160,9 +164,9 @@ static bool GetServerVersion(const CString& path,
         HttpError response = std::get<HttpError>(resp);
         CString error(response.http_error.c_str());
 
-        showMessageCallback(error.GetString());
+        showMessageCallback(_T("Information"), error.GetString());
     } else {
-        showMessageCallback(_T("Unknown error"));
+        showMessageCallback(_T("Information"), _T("Unknown error"));
     }
 
     return false;
@@ -233,22 +237,9 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     bool is_success =
         CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
-            return (isDefault ? PerformLoginFlow(path, dlg,
-                                                 [dlg](const CString& msg) {
-                                                     ::MessageBox(dlg->GetSafeHwnd(), msg,
-                                                                  _T("Information"),
-                                                                  MB_OK | MB_ICONERROR);
-                                                 })
-                              : CheckExistingSession(session_id, path,
-                                                     [dlg](const CString& msg) {
-                                                         ::MessageBox(dlg->GetSafeHwnd(), msg,
-                                                                      _T("Information"),
-                                                                      MB_OK | MB_ICONERROR);
-                                                     })) &&
-                   GetServerVersion(path, [dlg](const CString& msg) {
-                       ::MessageBox(dlg->GetSafeHwnd(), msg, _T("Information"),
-                                    MB_OK | MB_ICONERROR);
-                   });
+            return (isDefault ? PerformLoginFlow(path, dlg, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
+                              : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&
+                   GetServerVersion(path, LAMBDA_SHOW_MSGBOX_ERROR(dlg));
         }).Run();
 
     if (is_success) {
