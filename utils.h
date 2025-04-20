@@ -19,7 +19,7 @@ std::string GetLastErrorString(DWORD errorCode);
 
 static inline CString LoadLocalizedString(UINT id) {
     CString strItem;
-    ASSERT(strItem.LoadString(id));
+    VERIFY(strItem.LoadString(id));
 
     return std::move(strItem);
 }
