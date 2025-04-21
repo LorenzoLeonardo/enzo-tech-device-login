@@ -4,6 +4,7 @@
 #include "pch.h"
 
 #include "AsyncTaskWithDialog.h"
+#include "CLoginDialog.h"
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
 #include "MessageBoxCustomizer.h"
@@ -15,7 +16,6 @@
 #include "utils.h"
 #include <atlconv.h>
 #include <thread>
-#include "CLoginDialog.h"
 
 #ifdef _DEBUG
 #    define new DEBUG_NEW
@@ -32,13 +32,13 @@ static bool IsDefaultSession(const CString& session_id, const CString& user_id) 
 }
 
 static bool
-PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg,
+PerformLoginFlow(const CString& path, CTaskProgressDlg* pWaitDlg, Provider provider,
                  std::function<void(const CString&, const CString&)> showMessageCallback) {
     std::string uuid_s = generate_uuid();
     CString uuid(CA2T(uuid_s.c_str(), CP_UTF8));
     CString url;
-    url.Format(_T("%s/auth?login=Google&session_id=%s"), Settings::GetInstance().Url().GetString(),
-               uuid.GetString());
+    url.Format(_T("%s/auth?login=%s&session_id=%s"), Settings::GetInstance().Url().GetString(),
+               Providers::ToString(provider).GetString(), uuid.GetString());
     ShellExecute(NULL, _T("open"), url, NULL, NULL, SW_SHOWNORMAL);
 
     int attempts = 0;
@@ -219,9 +219,20 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         return FALSE; // Exit the application
     }
+
+    CString path = GetIniFilePath(_T("user.ini"));
+    CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
+    bool isDefault = IsDefaultSession(session_id, user_id);
+
     CLoginDialog loginDlg;
-    m_pMainWnd = &loginDlg;
-    INT_PTR nResponse = loginDlg.DoModal();
+    if (isDefault) {
+        INT_PTR nResponse = loginDlg.DoModal();
+        if (nResponse == IDCANCEL) {
+            return FALSE;
+        }
+    }
+    Provider provider = loginDlg.Provider();
 
     INITCOMMONCONTROLSEX InitCtrls = {sizeof(InitCtrls), ICC_WIN95_CLASSES};
     InitCommonControlsEx(&InitCtrls);
@@ -232,17 +243,6 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-    CString path = GetIniFilePath(_T("user.ini"));
-    CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
-    CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
-    bool isDefault = IsDefaultSession(session_id, user_id);
-
-    if (IsDefaultSession(session_id, user_id)) {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                     LoadLocalizedString(IDS_INFO_PLEASE_AUTHENTICATE),
-                     LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
-    }
-
     auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
@@ -250,7 +250,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     bool is_success =
         CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
             return (isDefault
-                        ? PerformLoginFlow(path, dlg, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
+                        ? PerformLoginFlow(path, dlg, provider, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
                         : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&
                    GetServerVersion(path, LAMBDA_SHOW_MSGBOX_ERROR(dlg));
         }).Await();
