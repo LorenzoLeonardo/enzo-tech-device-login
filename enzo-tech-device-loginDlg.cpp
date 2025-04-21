@@ -138,12 +138,16 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
     CMenu* pSysMenu = GetSystemMenu(FALSE);
     if (pSysMenu != nullptr) {
         BOOL bNameValid;
-        CString strAboutMenu;
+        CString strAboutMenu, strLogout;
         bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
+        ASSERT(bNameValid);
+        bNameValid = strLogout.LoadString(IDS_LOGOUT);
         ASSERT(bNameValid);
         if (!strAboutMenu.IsEmpty()) {
             pSysMenu->AppendMenu(MF_SEPARATOR);
             pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+            pSysMenu->AppendMenu(MF_SEPARATOR);
+            pSysMenu->AppendMenu(MF_STRING, IDM_LOGOUT, strLogout);
         }
     }
 
@@ -185,6 +189,10 @@ void CenzotechdeviceloginDlg::OnSysCommand(UINT nID, LPARAM lParam) {
     if ((nID & 0xFFF0) == IDM_ABOUTBOX) {
         CAboutDlg dlgAbout;
         dlgAbout.DoModal();
+    } else if ((nID & 0xFFF0) == IDM_LOGOUT) {
+        ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/logout"), NULL, NULL,
+                     SW_SHOWNORMAL);
+        OnOK();
     } else {
         CDialogEx::OnSysCommand(nID, lParam);
     }
