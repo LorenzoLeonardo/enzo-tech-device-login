@@ -188,6 +188,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AsyncTaskWithDialog.h" />
+    <ClInclude Include="CLoginDialog.h" />
+    <ClInclude Include="CLogoButton.h" />
     <ClInclude Include="CTaskProgressDlg.h" />
     <ClInclude Include="CCustomClock.h" />
     <ClInclude Include="Communicator.h" />
@@ -204,6 +206,8 @@
     <ClInclude Include="Uuid.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CLoginDialog.cpp" />
+    <ClCompile Include="CLogoButton.cpp" />
     <ClCompile Include="CTaskProgressDlg.cpp" />
     <ClCompile Include="CCustomClock.cpp" />
     <ClCompile Include="Communicator.cpp" />
@@ -230,8 +234,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\android-icon-72x72.bmp" />
+    <Image Include="res\bitmap2.bmp" />
     <Image Include="res\enzo-tech-device-login.ico" />
+    <Image Include="res\google.bmp" />
     <Image Include="res\Logo.png" />
+    <Image Include="res\microsoft.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

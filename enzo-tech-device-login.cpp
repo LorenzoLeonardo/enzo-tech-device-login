@@ -15,6 +15,7 @@
 #include "utils.h"
 #include <atlconv.h>
 #include <thread>
+#include "CLoginDialog.h"
 
 #ifdef _DEBUG
 #    define new DEBUG_NEW
@@ -218,6 +219,10 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
         return FALSE; // Exit the application
     }
+    CLoginDialog loginDlg;
+    m_pMainWnd = &loginDlg;
+    INT_PTR nResponse = loginDlg.DoModal();
+
     INITCOMMONCONTROLSEX InitCtrls = {sizeof(InitCtrls), ICC_WIN95_CLASSES};
     InitCommonControlsEx(&InitCtrls);
     CWinApp::InitInstance();
