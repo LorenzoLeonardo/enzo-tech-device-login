@@ -24,6 +24,9 @@
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133
+#define IDD_DIALOG_LOGIN                135
+#define IDB_BITMAP_MICROSOFT            138
+#define IDB_BITMAP_GOOGLE               139
 #define IDC_BUTTON_LOGIN                1000
 #define IDC_BUTTON_LOGOUT               1001
 #define IDC_EDIT_NAME                   1002
@@ -39,14 +42,16 @@
 #define IDC_STATIC_AUTH                 1012
 #define IDC_STATIC_AUTHENTICATING_LABEL 1012
 #define IDC_STATIC_FOOTER               1013
+#define IDC_BUTTON_MICROSOFT            1014
+#define IDC_BUTTON_GOOGLE               1015
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
