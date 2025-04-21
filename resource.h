@@ -3,6 +3,7 @@
 // Used by enzotechdevicelogin.rc
 //
 #define IDM_ABOUTBOX                    0x0010
+#define IDM_LOGOUT                      0x0020
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_ENZOTECHDEVICELOGIN_DIALOG  102
@@ -21,6 +22,7 @@
 #define IDS_INFO_BADGE_OUT_SUCCESS      114
 #define IDS_INFO_PLEASE_AUTHENTICATE    115
 #define IDS_ERROR_ANOTHER_INSTANCE      116
+#define IDS_LOGOUT                      117
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133
