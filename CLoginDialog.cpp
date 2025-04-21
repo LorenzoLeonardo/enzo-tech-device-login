@@ -40,8 +40,12 @@ BOOL CLoginDialog::OnInitDialog() {
 }
 void CLoginDialog::OnBnClickedButtonGoogle() {
     // TODO: Add your control notification handler code here
+    m_provider = Provider::Google;
+    OnOK();
 }
 
 void CLoginDialog::OnBnClickedButtonMicrosoft() {
     // TODO: Add your control notification handler code here
+    m_provider = Provider::Microsoft;
+    OnOK();
 }
