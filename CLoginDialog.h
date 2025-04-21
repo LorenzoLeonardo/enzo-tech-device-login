@@ -37,7 +37,8 @@ class CLoginDialog : public CDialogEx {
     CLogoButton m_GoogleButton;
     CLogoButton m_MicrosoftButton;
     Provider m_provider = {};
-
+    CBrush m_brBackground;
+    CBrush m_brGroupBox;
     virtual BOOL OnInitDialog();
     Provider Provider() { return std::move(m_provider); }
 
@@ -53,4 +54,6 @@ class CLoginDialog : public CDialogEx {
   public:
     afx_msg void OnBnClickedButtonGoogle();
     afx_msg void OnBnClickedButtonMicrosoft();
+    afx_msg void OnPaint();
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
