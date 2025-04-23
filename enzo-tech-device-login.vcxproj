@@ -188,6 +188,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AsyncTaskWithDialog.h" />
+    <ClInclude Include="CCustomEdit.h" />
     <ClInclude Include="CLoginDialog.h" />
     <ClInclude Include="CLogoButton.h" />
     <ClInclude Include="CTaskProgressDlg.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Uuid.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCustomEdit.cpp" />
     <ClCompile Include="CLoginDialog.cpp" />
     <ClCompile Include="CLogoButton.cpp" />
     <ClCompile Include="CTaskProgressDlg.cpp" />

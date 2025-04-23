@@ -4,6 +4,7 @@
 
 #pragma once
 #include "CCustomClock.h"
+#include "CCustomEdit.h"
 #include "CScalableBitmapStatic.h"
 #include <atomic>
 #include <thread>
@@ -61,7 +62,7 @@ class CenzotechdeviceloginDlg : public CDialogEx {
     afx_msg void OnDestroy();
 
   private:
-    CEdit m_ctrlEditName;
-    CEdit m_ctrlEditEmail;
-    CEdit m_ctrlEditDeviceId;
+    CCustomEdit m_ctrlEditName;
+    CCustomEdit m_ctrlEditEmail;
+    CCustomEdit m_ctrlEditDeviceId;
 };
