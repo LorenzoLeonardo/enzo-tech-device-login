@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CLoginDialog, CDialogEx)
 
 CLoginDialog::CLoginDialog(CWnd* pParent /*=nullptr*/) : CDialogEx(IDD_DIALOG_LOGIN, pParent) {
-    m_brGroupBox.CreateSolidBrush(RGB(13, 71, 161));
+    m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
     m_brGroupBox.CreateSolidBrush(RGB(66, 165, 245));
 }
 
