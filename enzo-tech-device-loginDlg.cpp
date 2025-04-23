@@ -82,6 +82,9 @@ void CenzotechdeviceloginDlg::DoDataExchange(CDataExchange* pDX) {
     DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_ctrlBtnLogout);
     DDX_Control(pDX, IDC_MY_GROUPBOX, m_myGroupBox);
     DDX_Control(pDX, IDC_STATIC_PICTURE, m_ctrlStaticLogo); // associate your static control
+    DDX_Control(pDX, IDC_EDIT_NAME, m_ctrlEditName);
+    DDX_Control(pDX, IDC_EDIT_EMAIL, m_ctrlEditEmail);
+    DDX_Control(pDX, IDC_EDIT_DEVICE_ID, m_ctrlEditDeviceId);
 }
 
 BEGIN_MESSAGE_MAP(CenzotechdeviceloginDlg, CDialogEx)
@@ -162,9 +165,10 @@ BOOL CenzotechdeviceloginDlg::OnInitDialog() {
     CString prev_action = ReadIniValue(_T("User"), _T("action"), _T("logout"), path);
     CString device_id = GetComputerNameMFC();
     CString server_version = ReadIniValue(_T("User"), _T("Serverversion"), _T("Unknown"), path);
-    SetDlgItemText(IDC_EDIT_NAME, name);
-    SetDlgItemText(IDC_EDIT_EMAIL, email);
-    SetDlgItemText(IDC_EDIT_DEVICE_ID, device_id);
+
+    m_ctrlEditName.SetWindowText(name.GetString());
+    m_ctrlEditEmail.SetWindowText(email.GetString());
+    m_ctrlEditDeviceId.SetWindowText(device_id.GetString());
 
     CString footer;
     footer.Format(_T("© 2025 Enzo Tech Computer Solutions\r\nEnzo Tech Webserver version %s"),
