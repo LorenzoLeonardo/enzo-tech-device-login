@@ -66,6 +66,9 @@
     <ClInclude Include="CLoginDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CCustomEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="enzo-tech-device-login.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLoginDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCustomEdit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
