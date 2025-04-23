@@ -59,4 +59,9 @@ class CenzotechdeviceloginDlg : public CDialogEx {
   public:
     //	afx_msg void OnClose();
     afx_msg void OnDestroy();
+
+  private:
+    CEdit m_ctrlEditName;
+    CEdit m_ctrlEditEmail;
+    CEdit m_ctrlEditDeviceId;
 };
