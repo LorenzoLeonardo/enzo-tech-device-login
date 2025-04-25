@@ -49,7 +49,7 @@ BOOL CTaskProgressDlg::OnInitDialog() {
     style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
     SetWindowLong(m_hWnd, GWL_STYLE, style);
 
-    SetTimer(1, 50, nullptr); // 50ms interval for smooth rotation
+    SetTimer(1, 25, nullptr); // 25ms interval for smooth rotation
     return TRUE;
 }
 
@@ -71,9 +71,9 @@ void CTaskProgressDlg::OnPaint() {
     SolidBrush backgroundBrush(Color(255, 13, 71, 161)); // Blue background
     memGraphics.FillRectangle(&backgroundBrush, 0, 0, rect.Width(), rect.Height());
 
-    const int dotCount = 10;
+    const int dotCount = 12;
     const int radius = 4;
-    const int orbitRadius = 20;
+    const int orbitRadius = 25;
     const double angleStep = 2 * 3.14159265 / dotCount;
     CPoint center(rect.Width() / 2, rect.Height() / 2);
 
@@ -103,7 +103,7 @@ void CTaskProgressDlg::OnPaint() {
 
 void CTaskProgressDlg::OnTimer(UINT_PTR nIDEvent) {
     if (nIDEvent == 1) {
-        m_Frame = (m_Frame + 1) % 10;
+        m_Frame = (m_Frame + 1) % 1000;
         Invalidate(FALSE);
     }
     CDialogEx::OnTimer(nIDEvent);
