@@ -38,7 +38,7 @@ PrivilegesRequired=admin
 OutputBaseFilename=Enzo Tech Timekeeping Badger Setup
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile="enzo-tech-device-login.ico"
+SetupIconFile="TimeKeeping.ico"
 
 [UninstallDelete]
 Type: files; Name: "{app}\{#MyAppExeName}"
@@ -53,6 +53,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "settings.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "TimeKeeping.ico"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -62,6 +63,6 @@ Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: s
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\TimeKeeping.ico"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\TimeKeeping.ico"
 

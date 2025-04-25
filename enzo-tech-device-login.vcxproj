@@ -110,7 +110,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>xcopy /Y /I "$(ProjectDir)res\enzo-tech-device-login.ico" "$(OutDir)"
+      <Command>xcopy /Y /I "$(ProjectDir)res\TimeKeeping.ico" "$(OutDir)"
 xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -190,7 +190,7 @@ xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>xcopy /Y /I "$(ProjectDir)res\enzo-tech-device-login.ico" "$(OutDir)"
+      <Command>xcopy /Y /I "$(ProjectDir)res\TimeKeeping.ico" "$(OutDir)"
 xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -247,8 +247,10 @@ xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
     <Image Include="res\bitmap2.bmp" />
     <Image Include="res\enzo-tech-device-login.ico" />
     <Image Include="res\google.bmp" />
+    <Image Include="res\icon1.ico" />
     <Image Include="res\Logo.png" />
     <Image Include="res\microsoft.bmp" />
+    <Image Include="res\TimeKeeping.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
