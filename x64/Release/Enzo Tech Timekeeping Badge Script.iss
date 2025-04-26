@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Enzo Tech Timekeeping Badger"
-#define MyAppVersion "1.1.4"
+#define MyAppVersion "1.1.5"
 #define MyAppPublisher "Enzo Tech Computer Solutions"
 #define MyAppURL "https://enzotechcomputersolutions.com"
 #define MyAppExeName "enzo-tech-device-login.exe"
