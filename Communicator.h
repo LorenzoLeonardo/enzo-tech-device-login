@@ -103,8 +103,21 @@ struct PackageName {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PackageName, Name, Version)
 
-using ApiResponse = std::variant<PollResponse, PollResponseError, DeviceLoginResponseError,
-                                 DeviceLoginResponseSuccess, PackageName, HttpError>;
+struct LogoutSession {
+    std::string session_id;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(LogoutSession, session_id)
+
+struct LogoutSessionResponse {
+    bool success;
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(LogoutSessionResponse, success)
+
+using ApiResponse =
+    std::variant<PollResponse, PollResponseError, DeviceLoginResponseError,
+                 DeviceLoginResponseSuccess, PackageName, LogoutSessionResponse, HttpError>;
 
 template <typename TInput>
 ApiResponse HttpPost(const TInput& input, const CString& host, const CString& endpoint) {
@@ -190,6 +203,8 @@ ApiResponse HttpPost(const TInput& input, const CString& host, const CString& en
         } else if (j.contains("user_id") && j.contains("name") && j.contains("email") &&
                    j.contains("login_status")) {
             output = j.get<PollResponse>();
+        } else if (j.contains("success")) {
+            output = j.get<LogoutSessionResponse>();
         } else {
             // Handle unexpected response
             DWORD error = GetLastError();

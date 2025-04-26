@@ -23,6 +23,7 @@
 #define IDS_INFO_PLEASE_AUTHENTICATE    115
 #define IDS_ERROR_ANOTHER_INSTANCE      116
 #define IDS_LOGOUT                      117
+#define IDS_INFO_LOGOUT_SUCCESS         118
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133

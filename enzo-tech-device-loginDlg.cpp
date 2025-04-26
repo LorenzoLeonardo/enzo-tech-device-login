@@ -194,6 +194,32 @@ void CenzotechdeviceloginDlg::OnSysCommand(UINT nID, LPARAM lParam) {
         CAboutDlg dlgAbout;
         dlgAbout.DoModal();
     } else if ((nID & 0xFFF0) == IDM_LOGOUT) {
+        CString path = GetIniFilePath(_T("user.ini"));
+        CString session_id =
+            ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
+
+        auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
+        pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
+        pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
+        pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
+
+        ApiResponse resp =
+            CAsyncTaskWithDialog<CTaskProgressDlg,
+                                 ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
+                return HttpPost<LogoutSession>(
+                    LogoutSession{std::string(CW2A(session_id.GetString(), CP_UTF8))},
+                    Settings::GetInstance().HostName(), _T("/logout"));
+            }).Await();
+
+        if (std::holds_alternative<LogoutSessionResponse>(resp)) {
+            LogoutSessionResponse response = std::get<LogoutSessionResponse>(resp);
+            if (response.success) {
+                ::MessageBox(
+                    AfxGetMainWnd()->GetSafeHwnd(), LoadLocalizedString(IDS_INFO_LOGOUT_SUCCESS),
+                    LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONINFORMATION);
+            }
+        }
+
         ShellExecute(NULL, _T("open"), Settings::GetInstance().Url() + _T("/logout"), NULL, NULL,
                      SW_SHOWNORMAL);
         OnOK();
