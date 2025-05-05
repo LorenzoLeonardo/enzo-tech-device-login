@@ -198,18 +198,22 @@ void CenzotechdeviceloginDlg::OnSysCommand(UINT nID, LPARAM lParam) {
         CString session_id =
             ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
 
-        auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
+        auto pAuthDlg = std::make_shared<CTaskProgressDlg>();
         pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
         pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
         pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
 
         ApiResponse resp =
-            CAsyncTaskWithDialog<CTaskProgressDlg,
-                                 ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
+            CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg*
+                                                                                  dlg) {
                 return HttpPost<LogoutSession>(
                     LogoutSession{std::string(CW2A(session_id.GetString(), CP_UTF8))},
                     Settings::GetInstance().HostName(), _T("/logout"));
             }).Await();
+
+        if (::IsWindow(pAuthDlg->GetSafeHwnd())) {
+            pAuthDlg->DestroyWindow();
+        }
 
         if (std::holds_alternative<LogoutSessionResponse>(resp)) {
             LogoutSessionResponse response = std::get<LogoutSessionResponse>(resp);
@@ -323,13 +327,13 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("login");
 
-    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
+    auto pAuthDlg = std::make_shared<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
     pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_IN));
+
     ApiResponse resp =
-        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
-                                                                                    dlg) {
+        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
                     std::string(CW2A(session_id.GetString(), CP_UTF8)),
@@ -341,6 +345,10 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
                 },
                 Settings::GetInstance().HostName(), _T("/applications/device_login"));
         }).Await();
+
+    if (::IsWindow(pAuthDlg->GetSafeHwnd())) {
+        pAuthDlg->DestroyWindow();
+    }
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);
@@ -404,14 +412,13 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
     CString timestamp = GetIsoTimestamp();
     CString action = _T("logout");
 
-    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
+    auto pAuthDlg = std::make_shared<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(LoadLocalizedString(IDS_TITLE_CONNECTING));
     pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
 
     ApiResponse resp =
-        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg.get(), [&](CTaskProgressDlg*
-                                                                                    dlg) {
+        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
                     std::string(CW2A(session_id.GetString(), CP_UTF8)),
@@ -423,6 +430,10 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
                 },
                 Settings::GetInstance().HostName(), _T("/applications/device_login"));
         }).Await();
+
+    if (::IsWindow(pAuthDlg->GetSafeHwnd())) {
+        pAuthDlg->DestroyWindow();
+    }
 
     if (std::holds_alternative<DeviceLoginResponseSuccess>(resp)) {
         DeviceLoginResponseSuccess response = std::get<DeviceLoginResponseSuccess>(resp);

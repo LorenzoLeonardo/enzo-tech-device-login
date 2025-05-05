@@ -243,17 +243,21 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
     SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-    auto pAuthDlg = std::make_unique<CTaskProgressDlg>();
+    auto pAuthDlg = std::make_shared<CTaskProgressDlg>();
     pAuthDlg->Create(IDD_AUTH_PROGRESS, AfxGetMainWnd());
     pAuthDlg->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
 
     bool is_success =
-        CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg.get(), [&](CTaskProgressDlg* dlg) {
+        CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return (isDefault
                         ? PerformLoginFlow(path, dlg, provider, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
                         : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&
                    GetServerVersion(path, LAMBDA_SHOW_MSGBOX_ERROR(dlg));
         }).Await();
+
+    if (::IsWindow(pAuthDlg->GetSafeHwnd())) {
+        pAuthDlg->DestroyWindow();
+    }
 
     if (is_success) {
         ShowMainDialog();
