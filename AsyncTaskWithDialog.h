@@ -11,17 +11,18 @@ class CAsyncTaskWithDialog {
   public:
     using TaskFunc = std::function<TResult(TDialog*)>;
 
-    CAsyncTaskWithDialog(TDialog* pDialog, TaskFunc taskFunc)
-        : m_pDialog(pDialog), m_taskFunc(taskFunc), m_isDone(false) {}
+    CAsyncTaskWithDialog(std::shared_ptr<TDialog> dialog, TaskFunc taskFunc, bool showDialog = true)
+        : m_pDialog(std::move(dialog)), m_taskFunc(std::move(taskFunc)), m_showDialog(showDialog),
+          m_isDone(false) {}
 
     TResult Await() {
-        if (m_pDialog && ::IsWindow(m_pDialog->GetSafeHwnd())) {
+        if (m_showDialog && m_pDialog && ::IsWindow(m_pDialog->GetSafeHwnd())) {
             m_pDialog->ShowWindow(SW_SHOW);
         }
 
-        std::thread worker([&]() {
-            m_result = m_taskFunc(m_pDialog);
-            m_isDone = true;
+        std::thread worker([dialog = m_pDialog, this]() {
+            this->m_result = this->m_taskFunc(dialog.get());
+            this->m_isDone = true;
         });
         worker.detach();
 
@@ -34,16 +35,13 @@ class CAsyncTaskWithDialog {
             Sleep(10);
         }
 
-        if (m_pDialog && ::IsWindow(m_pDialog->GetSafeHwnd())) {
-            m_pDialog->DestroyWindow();
-        }
-
         return m_result;
     }
 
   private:
-    TDialog* m_pDialog;
+    std::shared_ptr<TDialog> m_pDialog;
     TaskFunc m_taskFunc;
+    bool m_showDialog;
     std::atomic<bool> m_isDone;
     TResult m_result{};
 };
