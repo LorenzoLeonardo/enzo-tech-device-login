@@ -3,7 +3,6 @@
 //
 #include "pch.h"
 
-#include "AsyncTaskWithDialog.h"
 #include "CLoginDialog.h"
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
@@ -14,6 +13,7 @@
 #include "enzo-tech-device-loginDlg.h"
 #include "framework.h"
 #include "utils.h"
+#include <AsyncMFCDialog/AsyncGenericDialog.hpp>
 #include <atlconv.h>
 #include <thread>
 
@@ -248,7 +248,7 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     pAuthDlg->SetWindowText(_T("Connecting to ") + Settings::GetInstance().Url());
 
     bool is_success =
-        CAsyncTaskWithDialog<CTaskProgressDlg, bool>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
+        TAsyncGenericDialog<CTaskProgressDlg, bool>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return (isDefault
                         ? PerformLoginFlow(path, dlg, provider, LAMBDA_SHOW_MSGBOX_ERROR(dlg))
                         : CheckExistingSession(session_id, path, LAMBDA_SHOW_MSGBOX_ERROR(dlg))) &&

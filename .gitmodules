@@ -1,0 +1,3 @@
+[submodule "external/AsyncMFCDialog"]
+	path = external/AsyncMFCDialog
+	url = https://github.com/LorenzoLeonardo/AsyncMFCDialog.git
