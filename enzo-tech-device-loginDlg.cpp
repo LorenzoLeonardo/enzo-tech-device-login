@@ -3,7 +3,6 @@
 //
 #include "pch.h"
 
-#include "AsyncTaskWithDialog.h"
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
 #include "MessageBoxCustomizer.h"
@@ -14,6 +13,7 @@
 #include "framework.h"
 #include "json.hpp"
 #include "utils.h"
+#include <AsyncMFCDialog/AsyncGenericDialog.hpp>
 #include <afxwin.h>
 #include <atlconv.h>
 #include <atomic>
@@ -204,8 +204,8 @@ void CenzotechdeviceloginDlg::OnSysCommand(UINT nID, LPARAM lParam) {
         pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
 
         ApiResponse resp =
-            CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg*
-                                                                                  dlg) {
+            TAsyncGenericDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg*
+                                                                                 dlg) {
                 return HttpPost<LogoutSession>(
                     LogoutSession{std::string(CW2A(session_id.GetString(), CP_UTF8))},
                     Settings::GetInstance().HostName(), _T("/logout"));
@@ -333,7 +333,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
     pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_IN));
 
     ApiResponse resp =
-        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
+        TAsyncGenericDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
                     std::string(CW2A(session_id.GetString(), CP_UTF8)),
@@ -418,7 +418,7 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
     pAuthDlg->SetBodyText(LoadLocalizedString(IDS_INFO_BADGE_OUT));
 
     ApiResponse resp =
-        CAsyncTaskWithDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
+        TAsyncGenericDialog<CTaskProgressDlg, ApiResponse>(pAuthDlg, [&](CTaskProgressDlg* dlg) {
             return HttpPost<DeviceEvent>(
                 DeviceEvent{
                     std::string(CW2A(session_id.GetString(), CP_UTF8)),

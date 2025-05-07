@@ -57,9 +57,6 @@
     <ClInclude Include="MessageBoxCustomizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AsyncTaskWithDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CLogoButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
