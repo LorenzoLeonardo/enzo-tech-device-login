@@ -23,10 +23,6 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
     CDC* pDC = CDC::FromHandle(lpDIS->hDC);
     CRect rect = lpDIS->rcItem;
 
-    // Determine background color (hover vs normal)
-    COLORREF bgColor = m_bHover ? RGB(220, 230, 250) : m_BackgroundColor;
-    pDC->FillSolidRect(&rect, bgColor);
-    // Background
     pDC->FillSolidRect(&rect, m_BackgroundColor);
 
     int padding = 0; // padding between image and text
