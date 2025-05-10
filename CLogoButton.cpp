@@ -22,14 +22,11 @@ void CLogoButton::SetTextColor(COLORREF color) {
 void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
     CDC* pDC = CDC::FromHandle(lpDIS->hDC);
     CRect rect = lpDIS->rcItem;
+    int padding = 0;
+    int imageWidth = 0;
 
     pDC->FillSolidRect(&rect, m_BackgroundColor);
 
-    int padding = 0; // padding between image and text
-
-    int imageWidth = 0;
-
-    // Icon
     if (m_Bitmap.m_hObject != nullptr) {
         CDC memDC;
         if (memDC.CreateCompatibleDC(pDC)) {
@@ -56,16 +53,6 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
         }
     }
 
-    // Text
-    int textLeft = rect.left + imageWidth + padding;
-    CRect textRect = rect;
-    textRect.left = textLeft;
-
-    pDC->SetBkMode(TRANSPARENT);
-    pDC->SetTextColor(m_TextColor);
-    pDC->DrawText(m_Text, &textRect, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
-
-    // Optional: Draw border highlight on hover
     if (m_bHover) {
         CPen pen(PS_SOLID, 1, RGB(150, 180, 255));
         CPen* pOldPen = pDC->SelectObject(&pen);
@@ -75,7 +62,6 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
         pDC->SelectObject(pOldPen);   // Restore old pen
     }
 
-    // Optional: draw focus rect if needed
     if (lpDIS->itemState & ODS_FOCUS)
         pDC->DrawFocusRect(&rect);
 }
