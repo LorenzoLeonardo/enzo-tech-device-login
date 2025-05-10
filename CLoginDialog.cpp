@@ -41,7 +41,7 @@ BOOL CLoginDialog::OnInitDialog() {
 
     m_MicrosoftButton.SubclassDlgItem(IDC_BUTTON_MICROSOFT, this);
     m_MicrosoftButton.SetBitmapFromResource(IDB_BITMAP_MICROSOFT);
-    m_MicrosoftButton.SetBackgroundColor(RGB(47, 47, 47));
+    m_MicrosoftButton.SetBackgroundColor(COLOR_VERY_DARK_GRAY);
 
     return TRUE;
 }
