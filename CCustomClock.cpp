@@ -8,7 +8,7 @@ CCustomClock::CCustomClock() {
     m_csFontStyle = _T("Microsoft Sans Serif");
     m_nFontSize = 12;
     m_nFontWeight = FW_NORMAL;
-    m_textColor = RGB(0, 0, 0);
+    m_textColor = COLOR_BLACK;
     m_textBKColor = DLG_BACKGROUND_COLOR;
     m_rectClock = {};
     pCCustomClock = this;
