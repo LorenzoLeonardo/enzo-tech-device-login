@@ -66,7 +66,7 @@ CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
     m_customClock.SetFontStyle(_T("Yu Gothic UI"));
     m_customClock.SetFontSize(28);
     m_customClock.SetFontWeight(FW_BOLD);
-    m_customClock.SetTextColor(RGB(255, 255, 255));
+    m_customClock.SetTextColor(COLOR_WHITE);
     m_customClock.SetTextBKColor(DLG_BACKGROUND_COLOR);
     m_customClock.CreateClock();
 }
@@ -291,7 +291,7 @@ HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     else if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME || pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
              pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE || pWnd->GetDlgCtrlID() == IDC_MY_GROUPBOX) {
-        pDC->SetTextColor(RGB(255, 255, 255));
+        pDC->SetTextColor(COLOR_WHITE);
         pDC->SetBkMode(TRANSPARENT);
         return (HBRUSH)m_brGroupBox.GetSafeHandle();
     }

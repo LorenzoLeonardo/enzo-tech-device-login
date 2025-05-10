@@ -20,7 +20,7 @@ IMPLEMENT_DYNAMIC(CTaskProgressDlg, CDialogEx)
 CTaskProgressDlg::CTaskProgressDlg(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_AUTH_PROGRESS, pParent), m_Frame(0) {
     m_brBackground.CreateSolidBrush(DLG_BACKGROUND_COLOR);
-    m_dotBrush.CreateSolidBrush(RGB(255, 255, 255));
+    m_dotBrush.CreateSolidBrush(COLOR_WHITE);
 }
 
 CTaskProgressDlg::~CTaskProgressDlg() {}
@@ -132,7 +132,7 @@ HBRUSH CTaskProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
     }
     if (pWnd->GetDlgCtrlID() == IDC_STATIC_AUTHENTICATING_LABEL) {
         pDC->SetBkMode(TRANSPARENT);
-        pDC->SetTextColor(RGB(255, 255, 255));
+        pDC->SetTextColor(COLOR_WHITE);
         return (HBRUSH)m_brBackground.GetSafeHandle();
     }
     return hbr;

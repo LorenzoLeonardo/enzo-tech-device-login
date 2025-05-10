@@ -1,6 +1,8 @@
 #pragma once
 #include <windows.h>
 
+#include "Definitions.h"
+
 class MessageBoxCustomizer {
   public:
     static MessageBoxCustomizer& Instance(); // Access globally
@@ -19,5 +21,5 @@ class MessageBoxCustomizer {
 
     HBRUSH m_BackgroundBrush = nullptr;
     COLORREF m_BackgroundColor = DLG_BACKGROUND_COLOR;
-    COLORREF m_TextColor = RGB(255, 255, 255);
+    COLORREF m_TextColor = COLOR_WHITE;
 };
