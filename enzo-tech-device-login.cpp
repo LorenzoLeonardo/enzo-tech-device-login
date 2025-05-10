@@ -214,9 +214,11 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
 
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        ::MessageBox(AfxGetMainWnd()->GetSafeHwnd(),
-                     LoadLocalizedString(IDS_ERROR_ANOTHER_INSTANCE),
+        ::MessageBox(nullptr, LoadLocalizedString(IDS_ERROR_ANOTHER_INSTANCE),
                      LoadLocalizedString(IDS_TITLE_INFORMATION), MB_OK | MB_ICONERROR);
+        if (hMutex) {
+            CloseHandle(hMutex);
+        }
         return FALSE; // Exit the application
     }
 
@@ -229,6 +231,9 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
     if (isDefault) {
         INT_PTR nResponse = loginDlg.DoModal();
         if (nResponse == IDCANCEL) {
+            if (hMutex) {
+                CloseHandle(hMutex);
+            }
             return FALSE;
         }
     }
@@ -261,11 +266,22 @@ BOOL CenzotechdeviceloginApp::InitInstance() {
 
     if (is_success) {
         ShowMainDialog();
+#if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
+        ControlBarCleanUp();
+#endif
+
+        if (hMutex) {
+            CloseHandle(hMutex);
+        }
+        return TRUE;
     }
 
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
     ControlBarCleanUp();
 #endif
 
+    if (hMutex) {
+        CloseHandle(hMutex);
+    }
     return FALSE;
 }
