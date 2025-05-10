@@ -6,7 +6,7 @@ class CLogoButton : public CButton {
     CBitmap m_Bitmap;
     CString m_Text;
     COLORREF m_BackgroundColor = COLOR_WHITE;
-    COLORREF m_TextColor = RGB(0, 0, 0);
+    COLORREF m_TextColor = COLOR_BLACK;
     bool m_bHover = false;
 
     void SetBitmapFromResource(UINT nIDResource);
