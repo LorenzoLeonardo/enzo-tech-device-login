@@ -27,7 +27,7 @@ void CCustomEdit::OnPaint() {
 
     // Set text attributes
     dc.SetBkMode(TRANSPARENT);
-    dc.SetTextColor(RGB(128, 128, 128));
+    dc.SetTextColor(COLOR_GRAY);
 
     // Get current font
     CFont* pOldFont = dc.SelectObject(GetFont());
