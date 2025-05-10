@@ -286,7 +286,7 @@ HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     // Footer label
     if (pWnd->GetDlgCtrlID() == IDC_STATIC_FOOTER) {
-        pDC->SetTextColor(RGB(21, 101, 192));
+        pDC->SetTextColor(FOOTER_COLOR);
         pDC->SetBkMode(TRANSPARENT);
         return static_cast<HBRUSH>(m_brBackground.GetSafeHandle());
     }
