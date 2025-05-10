@@ -71,6 +71,8 @@ CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
     m_customClock.CreateClock();
 }
 CenzotechdeviceloginDlg::~CenzotechdeviceloginDlg() {
+    m_brBackground.DeleteObject();
+    m_brGroupBox.DeleteObject();
     m_customClock.DestroyClock();
 }
 
@@ -270,7 +272,6 @@ void CenzotechdeviceloginDlg::OnPaint() {
             ScreenToClient(&rect);
 
             dc.FillSolidRect(&rect, GROUP_BACKGROUND);
-            CDialogEx::OnPaint();
         }
     }
 }
@@ -280,21 +281,25 @@ HBRUSH CenzotechdeviceloginDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     // Set dialog background color
     if (nCtlColor == CTLCOLOR_DLG) {
-        return (HBRUSH)m_brBackground.GetSafeHandle();
+        return static_cast<HBRUSH>(m_brBackground.GetSafeHandle());
     }
 
+    // Footer label
     if (pWnd->GetDlgCtrlID() == IDC_STATIC_FOOTER) {
         pDC->SetTextColor(RGB(21, 101, 192));
         pDC->SetBkMode(TRANSPARENT);
-        return (HBRUSH)m_brBackground.GetSafeHandle();
+        return static_cast<HBRUSH>(m_brBackground.GetSafeHandle());
     }
 
-    else if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME || pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
-             pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE || pWnd->GetDlgCtrlID() == IDC_MY_GROUPBOX) {
-        pDC->SetTextColor(COLOR_WHITE);
+    // Labels and group box
+    if (pWnd->GetDlgCtrlID() == IDC_STATIC_NAME || pWnd->GetDlgCtrlID() == IDC_STATIC_EMAIL ||
+        pWnd->GetDlgCtrlID() == IDC_STATIC_DEVICE || pWnd->GetDlgCtrlID() == IDC_MY_GROUPBOX) {
+
+        pDC->SetTextColor(COLOR_WHITE); // Corrected from COLOR_WHITE
         pDC->SetBkMode(TRANSPARENT);
-        return (HBRUSH)m_brGroupBox.GetSafeHandle();
+        return static_cast<HBRUSH>(m_brGroupBox.GetSafeHandle());
     }
+
     return hbr;
 }
 
