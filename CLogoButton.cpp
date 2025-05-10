@@ -32,26 +32,28 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
     // Icon
     if (m_Bitmap.m_hObject != nullptr) {
         CDC memDC;
-        memDC.CreateCompatibleDC(pDC);
-        CBitmap* pOldBmp = memDC.SelectObject(&m_Bitmap);
+        if (memDC.CreateCompatibleDC(pDC)) {
+            CBitmap* pOldBmp = memDC.SelectObject(&m_Bitmap);
 
-        BITMAP bmp;
-        m_Bitmap.GetBitmap(&bmp);
+            BITMAP bmp;
+            m_Bitmap.GetBitmap(&bmp);
 
-        // Resize logic
-        int targetHeight = rect.Height(); // leave vertical margin
-        int targetWidth = (bmp.bmWidth * targetHeight) / bmp.bmHeight;
-        imageWidth = targetWidth;
+            // Resize logic
+            int targetHeight = rect.Height(); // leave vertical margin
+            int targetWidth = (bmp.bmWidth * targetHeight) / bmp.bmHeight;
+            imageWidth = targetWidth;
 
-        int imgLeft = rect.left;
-        int imgTop = rect.top + (rect.Height() - targetHeight) / 2;
+            int imgLeft = rect.left;
+            int imgTop = rect.top + (rect.Height() - targetHeight) / 2;
 
-        // StretchBlt with proper resizing
-        pDC->SetStretchBltMode(HALFTONE); // Better quality
-        pDC->StretchBlt(imgLeft, imgTop, targetWidth, targetHeight, &memDC, 0, 0, bmp.bmWidth,
-                        bmp.bmHeight, SRCCOPY);
+            // StretchBlt with proper resizing
+            pDC->SetStretchBltMode(HALFTONE); // Better quality
+            pDC->StretchBlt(imgLeft, imgTop, targetWidth, targetHeight, &memDC, 0, 0, bmp.bmWidth,
+                            bmp.bmHeight, SRCCOPY);
 
-        memDC.SelectObject(pOldBmp);
+            memDC.SelectObject(pOldBmp);
+            memDC.DeleteDC();
+        }
     }
 
     // Text
@@ -67,9 +69,10 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
     if (m_bHover) {
         CPen pen(PS_SOLID, 1, RGB(150, 180, 255));
         CPen* pOldPen = pDC->SelectObject(&pen);
-        pDC->SelectStockObject(NULL_BRUSH);
+        HBRUSH hOldBrush = (HBRUSH)pDC->SelectObject(GetStockObject(NULL_BRUSH)); // Fix here
         pDC->Rectangle(&rect);
-        pDC->SelectObject(pOldPen);
+        pDC->SelectObject(hOldBrush); // Restore old brush
+        pDC->SelectObject(pOldPen);   // Restore old pen
     }
 
     // Optional: draw focus rect if needed
