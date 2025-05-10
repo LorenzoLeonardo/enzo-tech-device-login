@@ -204,6 +204,7 @@ xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
     <ClInclude Include="CCustomClock.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="CScalableBitmapStatic.h" />
+    <ClInclude Include="Definitions.h" />
     <ClInclude Include="enzo-tech-device-login.h" />
     <ClInclude Include="enzo-tech-device-loginDlg.h" />
     <ClInclude Include="framework.h" />

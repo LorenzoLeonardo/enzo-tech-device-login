@@ -18,6 +18,6 @@ class MessageBoxCustomizer {
     HHOOK m_Hook = nullptr;
 
     HBRUSH m_BackgroundBrush = nullptr;
-    COLORREF m_BackgroundColor = RGB(13, 71, 161);
+    COLORREF m_BackgroundColor = DLG_BACKGROUND_COLOR;
     COLORREF m_TextColor = RGB(255, 255, 255);
 };

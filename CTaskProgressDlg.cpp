@@ -4,9 +4,11 @@
 #include "pch.h"
 
 #include "CTaskProgressDlg.h"
+#include "Definitions.h"
 #include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
+
 // CTaskProgressDlg dialog
 #include <gdiplus.h>
 using namespace Gdiplus;
@@ -17,7 +19,7 @@ IMPLEMENT_DYNAMIC(CTaskProgressDlg, CDialogEx)
 
 CTaskProgressDlg::CTaskProgressDlg(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_AUTH_PROGRESS, pParent), m_Frame(0) {
-    m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
+    m_brBackground.CreateSolidBrush(DLG_BACKGROUND_COLOR);
     m_dotBrush.CreateSolidBrush(RGB(255, 255, 255));
 }
 

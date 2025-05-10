@@ -5,6 +5,7 @@
 
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
+#include "Definitions.h"
 #include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "afxdialogex.h"
@@ -26,9 +27,6 @@ using json = nlohmann::json;
 #ifdef _DEBUG
 #    define new DEBUG_NEW
 #endif
-
-COLORREF DLG_BACKGROUND = RGB(13, 71, 161);
-COLORREF GROUP_BACKGROUND = RGB(66, 165, 245);
 
 // CAboutDlg dialog used for App About
 
@@ -63,13 +61,13 @@ END_MESSAGE_MAP()
 CenzotechdeviceloginDlg::CenzotechdeviceloginDlg(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_ENZOTECHDEVICELOGIN_DIALOG, pParent) {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-    m_brBackground.CreateSolidBrush(DLG_BACKGROUND);
+    m_brBackground.CreateSolidBrush(DLG_BACKGROUND_COLOR);
     m_brGroupBox.CreateSolidBrush(GROUP_BACKGROUND);
     m_customClock.SetFontStyle(_T("Yu Gothic UI"));
     m_customClock.SetFontSize(28);
     m_customClock.SetFontWeight(FW_BOLD);
     m_customClock.SetTextColor(RGB(255, 255, 255));
-    m_customClock.SetTextBKColor(DLG_BACKGROUND);
+    m_customClock.SetTextBKColor(DLG_BACKGROUND_COLOR);
     m_customClock.CreateClock();
 }
 CenzotechdeviceloginDlg::~CenzotechdeviceloginDlg() {
@@ -271,7 +269,7 @@ void CenzotechdeviceloginDlg::OnPaint() {
             rect.top += y;
             ScreenToClient(&rect);
 
-            dc.FillSolidRect(&rect, RGB(66, 165, 245));
+            dc.FillSolidRect(&rect, GROUP_BACKGROUND);
             CDialogEx::OnPaint();
         }
     }
