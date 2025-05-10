@@ -37,7 +37,7 @@ BOOL CLoginDialog::OnInitDialog() {
 
     m_GoogleButton.SubclassDlgItem(IDC_BUTTON_GOOGLE, this);
     m_GoogleButton.SetBitmapFromResource(IDB_BITMAP_GOOGLE);
-    m_GoogleButton.SetBackgroundColor(RGB(255, 255, 255));
+    m_GoogleButton.SetBackgroundColor(COLOR_WHITE);
 
     m_MicrosoftButton.SubclassDlgItem(IDC_BUTTON_MICROSOFT, this);
     m_MicrosoftButton.SetBitmapFromResource(IDB_BITMAP_MICROSOFT);
@@ -84,7 +84,7 @@ void CLoginDialog::OnPaint() {
         CFont* pOldFont = dc.SelectObject(&font);
 
         // Set text color and transparent background
-        dc.SetTextColor(RGB(255, 255, 255)); // White
+        dc.SetTextColor(COLOR_WHITE); // White
         dc.SetBkMode(TRANSPARENT);
 
         // Draw text at top-left of the rect
@@ -105,7 +105,7 @@ HBRUSH CLoginDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
     }
 
     if (pWnd->GetDlgCtrlID() == IDC_MY_GROUPBOX) {
-        pDC->SetTextColor(RGB(255, 255, 255));
+        pDC->SetTextColor(COLOR_WHITE);
         return (HBRUSH)m_brGroupBox.GetSafeHandle();
     }
 

@@ -1,9 +1,11 @@
 #pragma once
+#include "Definitions.h"
+
 class CLogoButton : public CButton {
   public:
     CBitmap m_Bitmap;
     CString m_Text;
-    COLORREF m_BackgroundColor = RGB(255, 255, 255);
+    COLORREF m_BackgroundColor = COLOR_WHITE;
     COLORREF m_TextColor = RGB(0, 0, 0);
     bool m_bHover = false;
 

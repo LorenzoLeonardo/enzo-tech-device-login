@@ -1,10 +1,10 @@
 #include "pch.h"
 
 #include "CCustomEdit.h"
-
+#include "Definitions.h"
 
 CCustomEdit::CCustomEdit() {
-    m_brBackground.CreateSolidBrush(RGB(255, 255, 255)); // Light gray background
+    m_brBackground.CreateSolidBrush(COLOR_WHITE);
 }
 
 CCustomEdit::~CCustomEdit() {}
