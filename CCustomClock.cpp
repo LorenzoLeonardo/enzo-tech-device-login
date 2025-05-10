@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "CCustomClock.h"
+#include "Definitions.h"
 
 CCustomClock* pCCustomClock;
 CCustomClock::CCustomClock() {
@@ -8,7 +9,8 @@ CCustomClock::CCustomClock() {
     m_nFontSize = 12;
     m_nFontWeight = FW_NORMAL;
     m_textColor = RGB(0, 0, 0);
-    m_textBKColor = RGB(13, 71, 161);
+    m_textBKColor = DLG_BACKGROUND_COLOR;
+    m_rectClock = {};
     pCCustomClock = this;
 }
 CCustomClock::~CCustomClock() {}

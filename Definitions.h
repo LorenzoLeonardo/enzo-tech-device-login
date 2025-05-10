@@ -1,0 +1,4 @@
+#pragma once
+
+#define DLG_BACKGROUND_COLOR RGB(13, 71, 161)
+#define GROUP_BACKGROUND RGB(66, 165, 245)

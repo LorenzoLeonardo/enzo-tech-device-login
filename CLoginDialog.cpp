@@ -5,6 +5,8 @@
 
 #include "CLoginDialog.h"
 #include "afxdialogex.h"
+
+#include "Definitions.h"
 #include "enzo-tech-device-login.h"
 
 // CLoginDialog dialog
@@ -12,8 +14,8 @@
 IMPLEMENT_DYNAMIC(CLoginDialog, CDialogEx)
 
 CLoginDialog::CLoginDialog(CWnd* pParent /*=nullptr*/) : CDialogEx(IDD_DIALOG_LOGIN, pParent) {
-    m_brBackground.CreateSolidBrush(RGB(13, 71, 161));
-    m_brGroupBox.CreateSolidBrush(RGB(66, 165, 245));
+    m_brBackground.CreateSolidBrush(DLG_BACKGROUND_COLOR);
+    m_brGroupBox.CreateSolidBrush(GROUP_BACKGROUND);
 }
 
 CLoginDialog::~CLoginDialog() {}
@@ -74,7 +76,7 @@ void CLoginDialog::OnPaint() {
         rect.top += y;
         ScreenToClient(&rect);
 
-        dc.FillSolidRect(&rect, RGB(66, 165, 245));
+        dc.FillSolidRect(&rect, GROUP_BACKGROUND);
 
         // Create "Segoe UI Black", 12pt font
         CFont font;
