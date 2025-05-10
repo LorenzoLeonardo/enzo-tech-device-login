@@ -5,4 +5,4 @@
 #define COLOR_WHITE RGB(255, 255, 255)
 #define COLOR_BLACK RGB(0, 0, 0)
 #define COLOR_GRAY RGB(128, 128, 128)
-
+#define FOOTER_COLOR RGB(21, 101, 192)
