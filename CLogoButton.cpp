@@ -54,10 +54,14 @@ void CLogoButton::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
     }
 
     if (m_bHover) {
-        CPen pen(PS_SOLID, 1, RGB(150, 180, 255));
+        COLORREF borderColor = (~m_BackgroundColor) & 0x00FFFFFF;
+        CPen pen(PS_DOT, 1, borderColor);
         CPen* pOldPen = pDC->SelectObject(&pen);
         HBRUSH hOldBrush = (HBRUSH)pDC->SelectObject(GetStockObject(NULL_BRUSH)); // Fix here
-        pDC->Rectangle(&rect);
+        CRect innerRect = rect;
+
+        innerRect.InflateRect(-1, -1); // Shrink so the 1px border fits within visible bounds
+        pDC->Rectangle(&innerRect);
         pDC->SelectObject(hOldBrush); // Restore old brush
         pDC->SelectObject(pOldPen);   // Restore old pen
     }
