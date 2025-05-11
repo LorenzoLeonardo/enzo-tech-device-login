@@ -78,23 +78,19 @@ void CCustomClock::DestroyClock() {
 }
 CString CCustomClock::GetDateTime() {
     SYSTEMTIME sysTime;
-    WORD wHour = 0;
-    CString csDateTime;
-
     GetLocalTime(&sysTime);
-    wHour = sysTime.wHour;
-    if (sysTime.wHour == 0)
-        wHour = 12;
-    else if (sysTime.wHour > 12)
-        wHour = sysTime.wHour - 12;
 
-    csDateTime.Format(_T("%s %02d, %04d "), pCCustomClock->GetMonthName(sysTime.wMonth).GetBuffer(),
+    // Convert 24-hour to 12-hour format
+    WORD wHour = sysTime.wHour % 12;
+    if (wHour == 0)
+        wHour = 12;
+
+    CString csDateTime;
+    csDateTime.Format(_T("%s %02d, %04d "), (LPCTSTR)pCCustomClock->GetMonthName(sysTime.wMonth),
                       sysTime.wDay, sysTime.wYear);
 
-    if (sysTime.wHour >= 12)
-        csDateTime.AppendFormat(_T("%d:%02d:%02d PM"), wHour, sysTime.wMinute, sysTime.wSecond);
-    else
-        csDateTime.AppendFormat(_T("%d:%02d:%02d AM"), wHour, sysTime.wMinute, sysTime.wSecond);
+    csDateTime.AppendFormat(_T("%d:%02d:%02d %s"), wHour, sysTime.wMinute, sysTime.wSecond,
+                            (sysTime.wHour >= 12) ? _T("PM") : _T("AM"));
 
     return csDateTime;
 }
@@ -117,23 +113,22 @@ void CCustomClock::DrawClock(CClientDC* dcSrc, int x, int y) {
     SYSTEMTIME sysTime;
     SIZE sizeTime = {}, sizeAMPM = {}, sizeDate = {};
     TEXTMETRIC tmTime = {}, tmDate = {};
-    CString csTime, csAMPM, csDate;
-    WORD wHour = 0;
 
     // 4. Get current time
     GetLocalTime(&sysTime);
-    wHour = sysTime.wHour;
+
+    // Convert 24-hour to 12-hour format
+    WORD wHour = sysTime.wHour % 12;
     if (wHour == 0)
         wHour = 12;
-    else if (wHour > 12)
-        wHour -= 12;
 
     // 5. Format strings
+    CString csTime, csAMPM, csDate;
     csTime.Format(_T("%d:%02d:%02d"), wHour, sysTime.wMinute, sysTime.wSecond);
     csAMPM = (sysTime.wHour >= 12) ? _T(" PM") : _T(" AM");
     csDate.Format(_T("%s, %s %02d, %04d"),
-                  CalcDayOfWeek(sysTime.wYear, sysTime.wMonth, sysTime.wDay).GetBuffer(),
-                  GetMonthName(sysTime.wMonth).GetBuffer(), sysTime.wDay, sysTime.wYear);
+                  (LPCTSTR)CalcDayOfWeek(sysTime.wYear, sysTime.wMonth, sysTime.wDay),
+                  (LPCTSTR)GetMonthName(sysTime.wMonth), sysTime.wDay, sysTime.wYear);
 
     // 6. Draw time
     dcSrc->SetBkMode(TRANSPARENT);
