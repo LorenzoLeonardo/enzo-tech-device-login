@@ -45,12 +45,20 @@ class CAboutDlg : public CDialogEx {
     // Implementation
   protected:
     DECLARE_MESSAGE_MAP()
+  public:
+    virtual BOOL OnInitDialog();
+
+  private:
+    CStatic m_ctrlStaticVersion;
+    CStatic m_ctrlStaticCopyRight;
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX) {}
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX) {
     CDialogEx::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
+    DDX_Control(pDX, IDC_STATIC_COPYRIGHT, m_ctrlStaticCopyRight);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
@@ -553,4 +561,20 @@ void CenzotechdeviceloginDlg::OnDestroy() {
     if (m_clockThread.joinable()) {
         m_clockThread.join(); // wait for thread to finish
     }
+}
+
+BOOL CAboutDlg::OnInitDialog() {
+    CDialogEx::OnInitDialog();
+
+    // TODO:  Add extra initialization here
+    CString appName = LoadLocalizedString(IDS_APP_NAME);
+    CString copyRight = LoadLocalizedString(IDS_COPYRIGHT);
+    CString version = GetAppVersion();
+
+    CString displayVersion = appName + _T(", Version ") + version;
+    m_ctrlStaticVersion.SetWindowText((LPCTSTR)displayVersion);
+    m_ctrlStaticCopyRight.SetWindowText((LPCTSTR)copyRight);
+    SetWindowText((LPCTSTR)displayVersion);
+
+    return TRUE;
 }

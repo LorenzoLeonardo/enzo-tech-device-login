@@ -1,7 +1,13 @@
 #include "pch.h"
 
 #include "utils.h"
+#include <memory>
 #include <string>
+#include <strsafe.h>
+#include <tchar.h>
+#include <windows.h>
+
+#pragma comment(lib, "Version.lib")
 
 CString GetComputerNameMFC() {
     TCHAR nameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -115,4 +121,34 @@ CString GetModulePath() {
     }
 
     return path;
+}
+
+CString GetAppVersion() {
+    CString versionStr = _T("Unknown");
+
+    // Get the full path of the executable
+    CString szFilePath = GetModulePath();
+
+    DWORD dummy;
+    DWORD verSize = GetFileVersionInfoSize((LPCTSTR)szFilePath, &dummy);
+    if (verSize == 0)
+        return versionStr;
+
+    std::unique_ptr<BYTE[]> verData(new BYTE[verSize]);
+
+    if (!GetFileVersionInfo((LPCTSTR)szFilePath, 0, verSize, verData.get()))
+        return versionStr;
+
+    VS_FIXEDFILEINFO* pFileInfo = nullptr;
+    UINT len = 0;
+
+    if (VerQueryValue(verData.get(), _T("\\"), reinterpret_cast<LPVOID*>(&pFileInfo), &len)) {
+        if (pFileInfo->dwSignature == VS_FFI_SIGNATURE) {
+            versionStr.Format(_T("%u.%u.%u"), LOWORD(pFileInfo->dwFileVersionMS),
+                              HIWORD(pFileInfo->dwFileVersionLS),
+                              LOWORD(pFileInfo->dwFileVersionLS));
+        }
+    }
+
+    return versionStr;
 }

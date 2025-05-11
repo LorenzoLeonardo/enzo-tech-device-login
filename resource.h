@@ -24,6 +24,8 @@
 #define IDS_ERROR_ANOTHER_INSTANCE      116
 #define IDS_LOGOUT                      117
 #define IDS_INFO_LOGOUT_SUCCESS         118
+#define IDS_APP_NAME                    119
+#define IDS_COPYRIGHT                   120
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     132
 #define IDD_AUTH_PROGRESS               133
@@ -49,6 +51,8 @@
 #define IDC_BUTTON_GOOGLE               1015
 #define IDC_EDIT1                       1016
 #define IDC_EDIT_LOGIN_HERE             1016
+#define IDC_STATIC_VERSION              1017
+#define IDC_STATIC_COPYRIGHT            1018
 
 // Next default values for new objects
 // 
@@ -56,7 +60,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
