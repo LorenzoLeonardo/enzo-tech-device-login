@@ -54,9 +54,6 @@
     <ClInclude Include="CScalableBitmapStatic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MessageBoxCustomizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CLogoButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -96,9 +93,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CScalableBitmapStatic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageBoxCustomizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLogoButton.cpp">

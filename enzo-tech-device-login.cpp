@@ -6,7 +6,6 @@
 #include "CLoginDialog.h"
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
-#include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "Uuid.h"
 #include "enzo-tech-device-login.h"
@@ -209,7 +208,6 @@ CenzotechdeviceloginApp theApp;
 // CenzotechdeviceloginApp initialization
 BOOL CenzotechdeviceloginApp::InitInstance() {
     TRACE(traceAppMsg, 0, "Enzo Tech Timekeeping Badger - Started.\n");
-    MessageBoxCustomizer::Instance().Initialize();
 
     HANDLE hMutex = CreateMutex(NULL, FALSE, AfxGetApp()->m_pszAppName);
 

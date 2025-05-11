@@ -6,7 +6,6 @@
 #include "CTaskProgressDlg.h"
 #include "Communicator.h"
 #include "Definitions.h"
-#include "MessageBoxCustomizer.h"
 #include "Settings.h"
 #include "afxdialogex.h"
 #include "enzo-tech-device-login.h"
@@ -327,7 +326,6 @@ HCURSOR CenzotechdeviceloginDlg::OnQueryDragIcon() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
-    MessageBoxCustomizer::Instance().Initialize();
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
@@ -412,7 +410,6 @@ void CenzotechdeviceloginDlg::OnBnClickedButtonLogin() {
 }
 
 void CenzotechdeviceloginDlg::OnBnClickedButtonLogout() {
-    MessageBoxCustomizer::Instance().Initialize();
     CString path = GetIniFilePath(_T("user.ini"));
     CString session_id = ReadIniValue(_T("User"), _T("session_id"), _T("default_session_id"), path);
     CString user_id = ReadIniValue(_T("User"), _T("user_id"), _T("default_user_id"), path);
