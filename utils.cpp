@@ -33,10 +33,10 @@ CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR
 }
 
 CString GetIniFilePath(LPCTSTR iniFileName) {
-    TCHAR exePath[MAX_PATH];
-    GetModuleFileName(NULL, exePath, MAX_PATH);
-
-    CString path(exePath);
+    CString path = GetModulePath();
+    if (path.IsEmpty()) {
+        return _T(""); // Failure case
+    }
     int pos = path.ReverseFind(_T('\\'));
     if (pos != -1) {
         path = path.Left(pos + 1); // Keep the directory path
@@ -78,9 +78,9 @@ std::string GetLastErrorString(DWORD errorCode = GetLastError()) {
     LPWSTR lpMsgBuf = nullptr;
 
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_HMODULE |
-                       FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   hModule, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf,
-                   0, nullptr);
+                      FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                  hModule, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf,
+                  0, nullptr);
 
     std::string result;
     if (lpMsgBuf) {
@@ -92,4 +92,27 @@ std::string GetLastErrorString(DWORD errorCode = GetLastError()) {
     }
 
     return result;
+}
+
+CString GetModulePath() {
+    CString path;
+    DWORD bufferSize = MAX_PATH;
+
+    while (true) {
+        DWORD len = ::GetModuleFileName(NULL, path.GetBufferSetLength(bufferSize), bufferSize);
+        if (len == 0) {
+            path.ReleaseBuffer();
+            return _T(""); // Failure case
+        }
+
+        if (len < bufferSize - 1) {
+            path.ReleaseBuffer(len);
+            break; // Success
+        }
+
+        // Buffer may have been too small, increase and retry
+        bufferSize *= 2;
+    }
+
+    return path;
 }
