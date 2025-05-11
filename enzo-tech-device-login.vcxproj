@@ -193,7 +193,13 @@ xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>xcopy /Y /I "$(ProjectDir)res\TimeKeeping.ico" "$(OutDir)"
-xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
+xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"
+if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+    "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" "$(OutDir)Enzo Tech Timekeeping Badge Script.iss"
+) else (
+    echo WARNING: Inno Setup is not available. Skipping installer build.
+)
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
