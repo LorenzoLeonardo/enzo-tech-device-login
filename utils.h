@@ -7,6 +7,7 @@ CString ReadIniValue(LPCTSTR section, LPCTSTR key, LPCTSTR defaultValue, LPCTSTR
 CString GetIsoTimestamp();
 CString GetIniFilePath(LPCTSTR iniFileName);
 std::string GetLastErrorString(DWORD errorCode);
+CString GetModulePath();
 
 #define LAMBDA_SHOW_MSGBOX_OK(dlg)                                                                 \
     [dlg](const CString& title, const CString& msg) {                                              \

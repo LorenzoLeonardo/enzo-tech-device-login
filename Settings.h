@@ -1,7 +1,9 @@
 #pragma once
+#include "utils.h"
 #include <Windows.h> // For GetPrivateProfileString
 #include <afx.h>     // For CString
 #include <wininet.h>
+
 #pragma comment(lib, "wininet.lib")
 
 class Settings {
@@ -11,15 +13,17 @@ class Settings {
 
     // Private constructor reads the settings.ini file
     Settings() {
-        CString path;
-        ::GetModuleFileName(NULL, path.GetBuffer(MAX_PATH), MAX_PATH);
-        path.ReleaseBuffer();
-        path = path.Left(path.ReverseFind(_T('\\')) + 1) + _T("settings.ini");
+        CString path = GetIniFilePath(_T("settings.ini"));
 
         TCHAR buffer[MAX_PATH] = {0};
         ::GetPrivateProfileString(_T("Network"), _T("Endpoint"), _T("http://127.0.0.1:3443"),
                                   buffer, MAX_PATH, path);
         m_endPoint = buffer;
+
+        // Ensure the string is null-terminated
+        if (m_endPoint.GetLength() == 0) {
+            m_endPoint = _T("http://127.0.0.1:3443");
+        }
 
         URL_COMPONENTS urlComp;
         TCHAR szHostName[256] = {0};
