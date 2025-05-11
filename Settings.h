@@ -2,6 +2,7 @@
 #include "utils.h"
 #include <Windows.h> // For GetPrivateProfileString
 #include <afx.h>     // For CString
+#include <memory>
 #include <wininet.h>
 
 #pragma comment(lib, "wininet.lib")
@@ -26,20 +27,24 @@ class Settings {
         }
 
         URL_COMPONENTS urlComp;
-        TCHAR szHostName[256] = {0};
+        // Use m_endPoint length to allocate enough space for the hostname
+        DWORD dwSize = m_endPoint.GetLength() + 1; // +1 for null-terminator
+
+        // Allocate memory for the hostname using unique_ptr
+        std::unique_ptr<TCHAR[]> szHostName(new TCHAR[dwSize]); // Unique pointer
 
         ZeroMemory(&urlComp, sizeof(urlComp));
         urlComp.dwStructSize = sizeof(urlComp);
-        urlComp.lpszHostName = szHostName;
-        urlComp.dwHostNameLength = _countof(szHostName);
+        urlComp.lpszHostName = szHostName.get(); // Use get() to access raw pointer
+        urlComp.dwHostNameLength = dwSize;
 
         if (InternetCrackUrl(m_endPoint, 0, 0, &urlComp)) {
-            CString hostName(szHostName, urlComp.dwHostNameLength);
+            CString hostName(urlComp.lpszHostName, urlComp.dwHostNameLength);
 
             // If localhost or 127.0.0.1, include the port
             if (hostName.CompareNoCase(_T("localhost")) == 0 ||
                 hostName.CompareNoCase(_T("127.0.0.1")) == 0) {
-                m_hostName.Format(_T("%s:%d"), hostName.GetString(), urlComp.nPort);
+                m_hostName.Format(_T("%s:%d"), (LPCTSTR)hostName, urlComp.nPort);
             } else {
                 m_hostName = hostName;
             }
