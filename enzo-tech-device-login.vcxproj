@@ -195,6 +195,7 @@ xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"</Command>
       <Command>xcopy /Y /I "$(ProjectDir)res\TimeKeeping.ico" "$(OutDir)"
 xcopy /Y /I "$(ProjectDir)settings.ini" "$(OutDir)"
 if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+    powershell -ExecutionPolicy Bypass -File "$(ProjectDir)extra-version-to-iss.ps1"
     "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" "$(OutDir)Enzo Tech Timekeeping Badge Script.iss"
 ) else (
     echo WARNING: Inno Setup is not available. Skipping installer build.
@@ -245,8 +246,10 @@ if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
+    <None Include="extra-version-to-iss.ps1" />
     <None Include="res\enzotechdevicelogin.rc2" />
     <None Include="settings.ini" />
+    <None Include="x64\Release\Enzo Tech Timekeeping Badge Script.iss" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\android-icon-72x72.bmp" />

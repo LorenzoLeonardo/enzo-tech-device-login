@@ -116,6 +116,8 @@
     </None>
     <None Include=".clang-format" />
     <None Include="settings.ini" />
+    <None Include="x64\Release\Enzo Tech Timekeeping Badge Script.iss" />
+    <None Include="extra-version-to-iss.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\enzo-tech-device-login.ico">
