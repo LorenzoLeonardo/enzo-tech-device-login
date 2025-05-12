@@ -246,6 +246,7 @@ if exist "c:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
+    <None Include=".github\workflows\msbuild.yml" />
     <None Include="extra-version-to-iss.ps1" />
     <None Include="res\enzotechdevicelogin.rc2" />
     <None Include="settings.ini" />
